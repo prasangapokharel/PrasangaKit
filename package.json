@@ -1,14 +1,15 @@
 {
   "name": "prasanga-init",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modern React Native UI starter kit with shadcn-style design, built with Expo, TypeScript, and NativeWind",
   "main": "expo-router/entry",
   "bin": {
-    "prasanga-init": "./cli.js"
+    "prasanga-init": "cli.js"
   },
   "files": [
     "src",
     "App.tsx",
+    "cli.js",
     "package.json",
     "tsconfig.json",
     "tailwind.config.js",
