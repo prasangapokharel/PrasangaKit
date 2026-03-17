@@ -5,7 +5,7 @@
     "target": "ES2020",
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "bundler",
@@ -24,22 +24,24 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@/components/*": ["src/components/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/screens/*": ["src/screens/*"],
-      "@/types/*": ["src/types/*"]
+      "@/components/*": ["components/*"],
+      "@/lib/*": ["lib/*"],
+      "@/screens/*": ["screens/*"],
+      "@/types/*": ["types/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/constants/*": ["constants/*"]
     }
   },
   "include": [
     "App.tsx",
-    "src/**/*.ts",
-    "src/**/*.tsx",
+    "app/**/*",
+    "components/**/*",
+    "constants/**/*",
+    "hooks/**/*",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ],
   "exclude": [
-    "node_modules",
-    "app/**/*",
-    "components/**/*"
+    "node_modules"
   ]
 }
