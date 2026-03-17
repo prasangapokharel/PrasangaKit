@@ -47,6 +47,8 @@ const Input = React.forwardRef<TextInput, InputComponentProps>(
     },
     ref
   ) => {
+    const [isFocused, setIsFocused] = React.useState(false);
+
     const sizeStyles: Record<InputSize, number> = {
       sm: 32,
       md: 40,
@@ -65,6 +67,17 @@ const Input = React.forwardRef<TextInput, InputComponentProps>(
       lg: 16,
     };
 
+    const getBorderColor = () => {
+      if (hasError || error) return "#fca5a5";
+      if (isFocused) return "#0ea5e9";
+      return "#e5e7eb";
+    };
+
+    const getBackgroundColor = () => {
+      if (isFocused) return "#f0f9ff";
+      return "#ffffff";
+    };
+
     const styles = StyleSheet.create({
       container: {
         marginBottom: 12,
@@ -74,17 +87,23 @@ const Input = React.forwardRef<TextInput, InputComponentProps>(
         fontWeight: "600",
         color: "#1f2937",
         marginBottom: 6,
+        letterSpacing: 0.3,
       },
       inputContainer: {
         flexDirection: "row",
         alignItems: "center",
         borderRadius: 8,
-        borderWidth: 1,
-        borderColor: hasError || error ? "#ef4444" : "#d1d5db",
-        backgroundColor: "#ffffff",
+        borderWidth: 1.5,
+        borderColor: getBorderColor(),
+        backgroundColor: getBackgroundColor(),
         height: sizeStyles[size],
         paddingHorizontal: paddingStyles[size],
         gap: 8,
+        shadowColor: isFocused ? "#0ea5e9" : "transparent",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: isFocused ? 0.1 : 0,
+        shadowRadius: 4,
+        elevation: isFocused ? 2 : 0,
       },
       input: {
         flex: 1,
@@ -95,14 +114,16 @@ const Input = React.forwardRef<TextInput, InputComponentProps>(
       },
       errorText: {
         fontSize: 12,
-        color: "#ef4444",
+        color: "#dc2626",
         marginTop: 4,
         fontWeight: "500",
+        letterSpacing: 0.2,
       },
       helperText: {
         fontSize: 12,
         color: "#6b7280",
         marginTop: 4,
+        letterSpacing: 0.2,
       },
       leftElement: {
         marginRight: 4,
@@ -121,7 +142,9 @@ const Input = React.forwardRef<TextInput, InputComponentProps>(
             ref={ref}
             style={styles.input}
             placeholder={placeholder}
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#d1d5db"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             {...props}
           />
           {rightElement && (

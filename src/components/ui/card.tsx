@@ -12,6 +12,8 @@ interface CardProps {
   rounded?: number;
   /** Container style override */
   style?: ViewStyle;
+  /** Background color */
+  backgroundColor?: string;
 }
 
 const Card = React.forwardRef<View, CardProps>(
@@ -22,22 +24,23 @@ const Card = React.forwardRef<View, CardProps>(
       padding = 16,
       rounded = 8,
       style,
+      backgroundColor = "#ffffff",
     },
     ref
   ) => {
     const styles = StyleSheet.create({
       card: {
-        backgroundColor: "#ffffff",
+        backgroundColor: backgroundColor,
         borderRadius: rounded,
         padding: padding,
         borderWidth: 1,
-        borderColor: "#e5e7eb",
+        borderColor: "#f0f0f0",
         ...(shadow && {
           shadowColor: "#000",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          elevation: 2,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 4,
+          elevation: 3,
         }),
       },
     });

@@ -68,19 +68,61 @@ const Button = React.forwardRef<View, ButtonProps>(
       lg: { paddingHorizontal: 24, paddingVertical: 16 },
     };
 
-    // Variant styles
+    // Variant styles with improved colors and shadows
     const variantStyles: Record<ButtonVariant, ViewStyle> = {
-      default: { backgroundColor: "#e5e7eb", borderWidth: 1, borderColor: "#d1d5db" },
-      primary: { backgroundColor: "#0ea5e9" },
-      secondary: { backgroundColor: "#f97316" },
-      outline: { borderWidth: 2, borderColor: "#0ea5e9", backgroundColor: "transparent" },
-      ghost: { backgroundColor: "transparent" },
-      destructive: { backgroundColor: "#ef4444" },
+      default: { 
+        backgroundColor: "#f3f4f6", 
+        borderWidth: 1, 
+        borderColor: "#e5e7eb",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+      },
+      primary: { 
+        backgroundColor: "#0ea5e9",
+        shadowColor: "#0ea5e9",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
+      },
+      secondary: { 
+        backgroundColor: "#f97316",
+        shadowColor: "#f97316",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
+      },
+      outline: { 
+        borderWidth: 2, 
+        borderColor: "#0ea5e9", 
+        backgroundColor: "transparent",
+        shadowColor: "#0ea5e9",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 1,
+      },
+      ghost: { 
+        backgroundColor: "transparent",
+        shadowColor: "transparent",
+      },
+      destructive: { 
+        backgroundColor: "#ef4444",
+        shadowColor: "#ef4444",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
+      },
     };
 
     // Text color variants
     const textColorVariants: Record<ButtonVariant, string> = {
-      default: "#1f2937",
+      default: "#374151",
       primary: "#ffffff",
       secondary: "#ffffff",
       outline: "#0ea5e9",
@@ -103,14 +145,14 @@ const Button = React.forwardRef<View, ButtonProps>(
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
-        opacity: disabled ? 0.5 : 1,
+        opacity: disabled ? 0.6 : 1,
         width: fullWidth ? "100%" : "auto",
       },
       text: {
         fontSize: textSizeStyles[size],
         color: textColorVariants[variant],
         fontWeight: "600",
-        letterSpacing: 0.5,
+        letterSpacing: 0.3,
       },
       row: {
         flexDirection: "row",
@@ -125,7 +167,7 @@ const Button = React.forwardRef<View, ButtonProps>(
         ref={ref}
         onPress={onPress}
         disabled={disabled || isLoading}
-        activeOpacity={0.7}
+        activeOpacity={disabled ? 1 : 0.7}
         style={[styles.container, containerStyle]}
       >
         <View style={styles.row}>
@@ -134,9 +176,11 @@ const Button = React.forwardRef<View, ButtonProps>(
             <ActivityIndicator
               size="small"
               color={
-                variant === "primary" || variant === "secondary"
+                variant === "primary" || variant === "secondary" || variant === "destructive"
                   ? "#fff"
-                  : "#000"
+                  : variant === "outline"
+                  ? "#0ea5e9"
+                  : "#1f2937"
               }
             />
           )}
