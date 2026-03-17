@@ -111,7 +111,7 @@ export default function App() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
           <TextComponent variant="h1" color="primary">
-            Prasanga UI
+            Welcome to Prasanga
           </TextComponent>
           <Text style={styles.subtitle}>
             Complete React Native UI Component Library
