@@ -8,16 +8,45 @@ import {
 } from "react-native";
 import Button from "./src/components/ui/button";
 import Input from "./src/components/ui/input";
+import Textarea from "./src/components/ui/textarea";
 import Card from "./src/components/ui/card";
 import Badge from "./src/components/ui/badge";
 import Modal from "./src/components/ui/modal";
 import Toast from "./src/components/ui/toast";
+import Checkbox from "./src/components/ui/checkbox";
+import Radio from "./src/components/ui/radio";
+import Switch from "./src/components/ui/switch";
+import Select from "./src/components/ui/select";
+import Slider from "./src/components/ui/slider";
+import Stepper from "./src/components/ui/stepper";
+import ProgressBar from "./src/components/ui/progress-bar";
+import CircularProgress from "./src/components/ui/circular-progress";
+import Alert from "./src/components/ui/alert";
+import Spinner from "./src/components/ui/spinner";
+import Container from "./src/components/ui/container";
+import Stack from "./src/components/ui/stack";
+import Divider from "./src/components/ui/divider";
+import Avatar from "./src/components/ui/avatar";
+import TextComponent from "./src/components/ui/text";
+import List from "./src/components/ui/list";
+import Tabs from "./src/components/ui/tabs";
+import Accordion from "./src/components/ui/accordion";
+import Tooltip from "./src/components/ui/tooltip";
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "error" | "info" | "warning">("success");
+  
+  // Form states
+  const [checkboxState, setCheckboxState] = useState(false);
+  const [radioValue, setRadioValue] = useState("option1");
+  const [switchValue, setSwitchValue] = useState(false);
+  const [selectValue, setSelectValue] = useState("opt1");
+  const [sliderValue, setSliderValue] = useState(50);
+  const [stepperValue, setStepperValue] = useState(1);
+  const [textValue, setTextValue] = useState("");
 
   const showToast = (message: string, type: "success" | "error" | "info" | "warning" = "success") => {
     setToastMessage(message);
@@ -33,6 +62,7 @@ export default function App() {
     scrollContent: {
       padding: 16,
       gap: 24,
+      paddingBottom: 40,
     },
     header: {
       fontSize: 28,
@@ -60,13 +90,19 @@ export default function App() {
       gap: 8,
       flexWrap: "wrap",
     },
-    card: {
-      marginTop: 8,
-    },
     badgeRow: {
       flexDirection: "row",
       gap: 8,
       flexWrap: "wrap",
+    },
+    divider: {
+      marginVertical: 16,
+    },
+    alertContainer: {
+      marginBottom: 12,
+    },
+    tabContainer: {
+      marginTop: 12,
     },
   });
 
@@ -74,51 +110,32 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
-          <Text style={styles.header}>Prasanga UI</Text>
+          <TextComponent variant="h1" color="primary">
+            Prasanga UI
+          </TextComponent>
           <Text style={styles.subtitle}>
-            Modern React Native UI Component Library
+            Complete React Native UI Component Library
           </Text>
         </View>
 
-        {/* Buttons Section */}
+        {/* ===== BUTTONS ===== */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Buttons</Text>
+          <Text style={styles.sectionTitle}>🔘 Buttons</Text>
           <View style={styles.buttonRow}>
-            <Button
-              variant="primary"
-              onPress={() => showToast("Primary button pressed!", "success")}
-            >
+            <Button variant="primary" onPress={() => showToast("Primary clicked!")}>
               Primary
             </Button>
-            <Button
-              variant="secondary"
-              onPress={() => showToast("Secondary button pressed!", "info")}
-            >
+            <Button variant="secondary" onPress={() => showToast("Secondary clicked!")}>
               Secondary
             </Button>
           </View>
           <View style={styles.buttonRow}>
-            <Button
-              variant="outline"
-              onPress={() => showToast("Outline button pressed!", "info")}
-            >
-              Outline
-            </Button>
-            <Button
-              variant="ghost"
-              onPress={() => showToast("Ghost button pressed!", "info")}
-            >
-              Ghost
-            </Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ghost">Ghost</Button>
           </View>
           <View style={styles.buttonRow}>
             <Button variant="default">Default</Button>
-            <Button
-              variant="destructive"
-              onPress={() => showToast("Destructive action!", "error")}
-            >
-              Delete
-            </Button>
+            <Button variant="destructive">Delete</Button>
           </View>
           <View style={styles.buttonRow}>
             <Button size="sm">Small</Button>
@@ -127,189 +144,247 @@ export default function App() {
           </View>
         </View>
 
-        {/* Input Section */}
+        {/* ===== INPUT & TEXT FIELDS ===== */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Input Fields</Text>
-          <Input
-            placeholder="Enter your name"
-            label="Name"
-            size="md"
-          />
-          <Input
-            placeholder="Enter your email"
-            label="Email"
-            size="md"
-            helperText="We'll never share your email"
-          />
-          <Input
-            placeholder="Enter your password"
-            label="Password"
-            size="md"
-            secureTextEntry
-          />
-          <Input
-            placeholder="This field has an error"
-            label="Error Field"
-            error="This field is required"
-            hasError
+          <Text style={styles.sectionTitle}>✏️ Input Fields</Text>
+          <Input placeholder="Enter name" label="Name" />
+          <Input placeholder="Enter email" label="Email" />
+          <Textarea placeholder="Enter message" label="Message" rows={3} />
+          <Input placeholder="Error field" label="Error" error="This is required" hasError />
+        </View>
+
+        {/* ===== CHECKBOXES ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>☑️ Checkboxes</Text>
+          <Checkbox checked={checkboxState} onPress={setCheckboxState} label="Accept terms" />
+          <Checkbox checked={!checkboxState} onPress={() => setCheckboxState(!checkboxState)} label="Subscribe" />
+        </View>
+
+        {/* ===== RADIO BUTTONS ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⭕ Radio Buttons</Text>
+          <Radio
+            value={radioValue}
+            onValueChange={(val) => setRadioValue(val as string)}
+            options={[
+              { label: "Option 1", value: "option1" },
+              { label: "Option 2", value: "option2" },
+              { label: "Option 3", value: "option3" },
+            ]}
           />
         </View>
 
-        {/* Card Section */}
+        {/* ===== SWITCH ===== */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Cards</Text>
+          <Text style={styles.sectionTitle}>🔄 Switch/Toggle</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Switch value={switchValue} onValueChange={setSwitchValue} />
+            <Text>{switchValue ? "Enabled" : "Disabled"}</Text>
+          </View>
+        </View>
+
+        {/* ===== SELECT/DROPDOWN ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📋 Select/Dropdown</Text>
+          <Select
+            label="Choose option"
+            value={selectValue}
+            onValueChange={(val) => setSelectValue(val as string)}
+            options={[
+              { label: "Option 1", value: "opt1" },
+              { label: "Option 2", value: "opt2" },
+              { label: "Option 3", value: "opt3" },
+            ]}
+          />
+        </View>
+
+        {/* ===== SLIDER ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🎚️ Slider</Text>
+          <Slider
+            min={0}
+            max={100}
+            value={sliderValue}
+            onValueChange={setSliderValue}
+            label="Volume"
+          />
+        </View>
+
+        {/* ===== STEPPER ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⬆️⬇️ Stepper</Text>
+          <Stepper
+            value={stepperValue}
+            min={1}
+            max={10}
+            onValueChange={setStepperValue}
+            label="Quantity"
+          />
+        </View>
+
+        {/* ===== PROGRESS ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📊 Progress Bars</Text>
+          <ProgressBar value={sliderValue} label="Download" showLabel />
+          <ProgressBar value={75} label="Upload" />
+          <View style={{ alignItems: "center", marginTop: 12 }}>
+            <CircularProgress value={sliderValue} label="Loading" />
+          </View>
+        </View>
+
+        <Divider style={styles.divider} />
+
+        {/* ===== ALERTS ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⚠️ Alerts</Text>
+          <Alert
+            title="Success!"
+            message="Your action was completed successfully"
+            type="success"
+            containerStyle={styles.alertContainer}
+          />
+          <Alert
+            title="Warning"
+            message="Please review before proceeding"
+            type="warning"
+            containerStyle={styles.alertContainer}
+          />
+          <Alert
+            title="Error"
+            message="Something went wrong"
+            type="error"
+            containerStyle={styles.alertContainer}
+          />
+        </View>
+
+        {/* ===== CARDS & BADGES ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🎴 Cards & Badges</Text>
           <Card>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: "#1f2937",
-                marginBottom: 8,
-              }}
-            >
+            <TextComponent variant="h4" color="primary" style={{ marginBottom: 8 }}>
               Card Title
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: "#6b7280",
-                lineHeight: 20,
-              }}
-            >
-              This is a card component with shadow, padding, and rounded corners.
-              It can wrap any content you want.
+            </TextComponent>
+            <Text style={{ color: "#6b7280", lineHeight: 20 }}>
+              This is a card component with shadow, border, and rounded corners.
             </Text>
           </Card>
-          <Card shadow={false}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: "#1f2937",
-                marginBottom: 8,
-              }}
-            >
-              Card without Shadow
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: "#6b7280",
-              }}
-            >
-              This card has no shadow, just border and padding.
-            </Text>
-          </Card>
-        </View>
-
-        {/* Badge Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Badges</Text>
           <View style={styles.badgeRow}>
-            <Badge variant="default">Default</Badge>
-            <Badge variant="primary">Primary</Badge>
-            <Badge variant="secondary">Secondary</Badge>
-          </View>
-          <View style={styles.badgeRow}>
+            <Badge variant="default">Draft</Badge>
+            <Badge variant="primary">New</Badge>
+            <Badge variant="secondary">Hot</Badge>
             <Badge variant="destructive">Error</Badge>
-            <Badge variant="success">Success</Badge>
-            <Badge variant="warning">Warning</Badge>
+            <Badge variant="success">Verified</Badge>
+            <Badge variant="warning">Pending</Badge>
           </View>
         </View>
 
-        {/* Modal Section */}
+        {/* ===== AVATAR ===== */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Modal</Text>
-          <Button
-            variant="primary"
-            onPress={() => setModalVisible(true)}
-          >
+          <Text style={styles.sectionTitle}>👤 Avatar</Text>
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            <Avatar initials="JD" />
+            <Avatar initials="AB" backgroundColor="#f97316" />
+            <Avatar initials="XY" backgroundColor="#22c55e" />
+          </View>
+        </View>
+
+        {/* ===== LISTS ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📝 Lists</Text>
+          <List
+            items={[
+              { id: 1, title: "Item 1", subtitle: "Subtitle 1" },
+              { id: 2, title: "Item 2", subtitle: "Subtitle 2" },
+              { id: 3, title: "Item 3", subtitle: "Subtitle 3" },
+            ]}
+          />
+        </View>
+
+        {/* ===== TABS ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📑 Tabs</Text>
+          <Tabs
+            tabs={[
+              { label: "Tab 1", content: <Text>Content for tab 1</Text> },
+              { label: "Tab 2", content: <Text>Content for tab 2</Text> },
+              { label: "Tab 3", content: <Text>Content for tab 3</Text> },
+            ]}
+            containerStyle={styles.tabContainer}
+          />
+        </View>
+
+        {/* ===== ACCORDION ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📂 Accordion</Text>
+          <Accordion
+            items={[
+              { id: 1, title: "Section 1", content: "Content for section 1" },
+              { id: 2, title: "Section 2", content: "Content for section 2" },
+              { id: 3, title: "Section 3", content: "Content for section 3" },
+            ]}
+          />
+        </View>
+
+        {/* ===== MODALS & TOOLTIPS ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>💬 Modals & Tooltips</Text>
+          <Button variant="primary" onPress={() => setModalVisible(true)}>
             Open Modal
           </Button>
+          <Tooltip text="This is a helpful tooltip!">
+            <Button variant="outline">Hover Me</Button>
+          </Tooltip>
           <Modal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}
-            title="Welcome to Prasanga UI"
-            closeButtonText="Got it!"
+            title="Welcome!"
+            closeButtonText="Got it"
           >
-            <Text
-              style={{
-                fontSize: 14,
-                color: "#6b7280",
-                lineHeight: 20,
-              }}
-            >
-              This is a reusable, accessible modal component. You can customize
-              the title, content, and button text.
+            <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
+              This is a modal dialog. You can customize the title, content, and buttons.
             </Text>
           </Modal>
         </View>
 
-        {/* Toast Section */}
+        {/* ===== SPINNER ===== */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Toast Notifications</Text>
+          <Text style={styles.sectionTitle}>⏳ Spinner</Text>
+          <Spinner size="large" label="Loading..." />
+        </View>
+
+        {/* ===== TOAST ===== */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🔔 Toast Notifications</Text>
           <View style={styles.buttonRow}>
-            <Button
-              size="sm"
-              variant="primary"
-              onPress={() => showToast("Success notification!", "success")}
-            >
+            <Button size="sm" variant="primary" onPress={() => showToast("Success!", "success")}>
               Success
             </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              onPress={() => showToast("Error occurred!", "error")}
-            >
+            <Button size="sm" variant="destructive" onPress={() => showToast("Error!", "error")}>
               Error
             </Button>
           </View>
           <View style={styles.buttonRow}>
-            <Button
-              size="sm"
-              variant="outline"
-              onPress={() => showToast("Information message", "info")}
-            >
+            <Button size="sm" variant="outline" onPress={() => showToast("Info!", "info")}>
               Info
             </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              onPress={() => showToast("Warning: Be careful!", "warning")}
-            >
+            <Button size="sm" variant="secondary" onPress={() => showToast("Warning!", "warning")}>
               Warning
             </Button>
           </View>
         </View>
 
         {/* Footer */}
-        <View
-          style={{
-            borderTopWidth: 1,
-            borderTopColor: "#e5e7eb",
-            paddingTop: 20,
-            marginTop: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 12,
-              color: "#9ca3af",
-              textAlign: "center",
-            }}
-          >
+        <Divider style={styles.divider} />
+        <View style={{ alignItems: "center", gap: 8 }}>
+          <TextComponent variant="small" color="muted" align="center">
             Prasanga UI Starter Kit v1.0.0
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              color: "#9ca3af",
-              textAlign: "center",
-              marginTop: 4,
-            }}
-          >
+          </TextComponent>
+          <TextComponent variant="caption" color="muted" align="center">
             Built with Expo, TypeScript, and NativeWind
-          </Text>
+          </TextComponent>
+          <TextComponent variant="caption" color="muted" align="center">
+            30+ Production-Ready Components
+          </TextComponent>
         </View>
       </ScrollView>
 
