@@ -1,8 +1,38 @@
 {
-  "name": "prasanga-ui",
-  "main": "expo-router/entry",
+  "name": "prasanga-init",
   "version": "1.0.0",
   "description": "Modern React Native UI starter kit with shadcn-style design, built with Expo, TypeScript, and NativeWind",
+  "main": "expo-router/entry",
+  "bin": {
+    "prasanga-init": "./cli.js"
+  },
+  "files": [
+    "src",
+    "App.tsx",
+    "package.json",
+    "tsconfig.json",
+    "tailwind.config.js",
+    "babel.config.js",
+    "globals.css",
+    "app.json",
+    "README.md"
+  ],
+  "keywords": [
+    "react-native",
+    "expo",
+    "ui-components",
+    "nativewind",
+    "tailwind",
+    "typescript",
+    "starter-kit"
+  ],
+  "author": "Prasanga Pokharel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:prasangapokharel/PrasangaKit.git"
+  },
+  "homepage": "https://github.com/prasangapokharel/PrasangaKit",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -50,5 +80,8 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0"
   },
-  "private": true
+  "preferGlobal": true,
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }
