@@ -1,10 +1,47 @@
-# Prasanga UI Starter Kit
+# Prasanga UI - React Native Component Library
 
-A modern, clean, and scalable React Native UI component library built with **Expo**, **TypeScript**, and **NativeWind** (Tailwind CSS for React Native). Perfect for developers who want a shadcn-style design system ready to use out of the box.
+A professional React Native UI component library with **33+ fully-typed, theme-aware components** built with **Expo** and **TypeScript**. Features dark/light mode support using shadcn design system colors.
 
-## 🚀 Quick Start
+**Website**: https://prasangakit.smmv.shop
 
-**One command to create a new Prasanga app:**
+---
+
+## 📦 Two Ways to Use Prasanga UI
+
+### Option 1: Component Library Only (Recommended for existing projects)
+
+**Package**: `prasanga-ui`
+
+Use just the components in your existing React Native project:
+
+```bash
+npm install prasanga-ui
+```
+
+**Import and use components:**
+
+```tsx
+import { Button, Card, Input } from 'prasanga-ui';
+
+export default function App() {
+  return (
+    <Card>
+      <Input placeholder="Enter text" />
+      <Button>Submit</Button>
+    </Card>
+  );
+}
+```
+
+**npm**: https://www.npmjs.com/package/prasanga-ui
+
+---
+
+### Option 2: Full Starter Kit (Recommended for new projects)
+
+**Package**: `prasanga-init`
+
+Get a complete, ready-to-use Expo project with all components pre-configured:
 
 ```bash
 npx prasanga-init MyNewApp
@@ -13,88 +50,101 @@ npm install
 npx expo start
 ```
 
-That's it! You're ready to build. ✨
+**Includes**:
+- All 33+ UI components
+- Dark/Light theme system
+- Professional home page with demos
+- Pre-configured Expo setup
+- TypeScript configuration
+- All dependencies ready to go
+
+**npm**: https://www.npmjs.com/package/prasanga-init
+
+---
+
+## 🚀 Quick Start
+
+### For New Projects
+```bash
+npx prasanga-init MyApp
+cd MyApp
+npm install
+npx expo start
+```
+
+### For Existing Projects
+```bash
+npm install prasanga-ui
+```
+
+Then import components:
+```tsx
+import { Button } from 'prasanga-ui';
+```
 
 ---
 
 ## ✨ Features
 
-- **Modern Design**: Shadcn-inspired clean and minimal UI components
-- **Fully Typed**: Complete TypeScript support with proper type definitions
-- **Production Ready**: 30+ components with scalable folder structure and best practices
-- **Zero Config**: Works out of the box with Expo, TypeScript, and Tailwind
+- **33+ Components**: Fully-typed with TypeScript
+- **Dark/Light Themes**: Automatic theme switching with shadcn colors
+- **Production Ready**: Used in real applications
+- **Zero Config**: Works out of the box
+- **Responsive**: Mobile-first design
 - **Accessible**: Built with accessibility in mind
-- **Multiple Variants**: Buttons, inputs, cards, modals, and more
-- **NativeWind**: Tailwind CSS support for React Native
-- **One-Command Install**: `npx prasanga-init` setup
+- **Official API**: https://prasangakit.smmv.shop
+- **Easy Installation**: One command setup or npm install
 
 ---
 
-## 📦 30+ Components Included
+## 📱 33+ Components Included
 
-### Form Components
+### Form Components (9)
 - **Button** - 6 variants (primary, secondary, outline, ghost, destructive, default) + 3 sizes
 - **Input** - Text input with labels, errors, and helpers
-- **Textarea** - Multi-line text input
-- **Checkbox** - Custom styled checkboxes
+- **Textarea** - Multi-line text input with custom rows
+- **Checkbox** - Custom styled checkboxes with labels
 - **Radio** - Radio button groups with horizontal/vertical layout
 - **Switch** - Animated toggle switches
 - **Select** - Modal dropdown with single/multi-select
 - **Slider** - Range input with value display
 - **Stepper** - Increment/decrement control
+- **DatePicker** - Interactive calendar date selection
 
-### Progress Components
+### Progress Components (2)
 - **ProgressBar** - Linear progress indicator with labels
 - **CircularProgress** - Circular progress indicator
 
-### Feedback & Overlay
+### Feedback & Overlay (5)
 - **Alert** - 4 types (success, warning, error, info)
 - **Toast** - Notifications with auto-dismiss
 - **Modal** - Customizable dialogs
 - **Spinner** - Loading indicator
 - **Tooltip** - Contextual help text
+- **Sheet** - Bottom sheet overlay
 
-### Layout Components
+### Layout Components (4)
 - **Container** - Flexible spacing and alignment wrapper
 - **Stack** - Row/column layout with gap support
 - **Grid** - Multi-column responsive layout
 - **Divider** - Horizontal/vertical separator
 
-### Display Components
+### Display Components (6)
 - **Card** - Flexible container with shadow options
 - **Badge** - 6 variants (default, primary, secondary, destructive, success, warning)
 - **Avatar** - Profile images with initials fallback
 - **Text** - Typography component (h1-h4, body, small, caption)
 - **Image** - Responsive image component
 - **List** - List items with separators and icons
+- **Table** - Responsive data table with sorting
 
-### Navigation Components
+### Navigation & Interaction (3)
 - **Tabs** - Tab navigation with smooth transitions
 - **Accordion** - Expandable sections
+- **Drawer** - Side panel with swipe support and responsive sizing
+- **Popover** - Contextual popover menus
 
----
-
-## 💻 Installation
-
-### Method 1: One-Command Setup (Recommended)
-
-```bash
-npx prasanga-init MyNewApp
-cd MyNewApp
-npm install
-npx expo start
-```
-
-### Method 2: Manual Setup
-
-Clone or download from GitHub:
-
-```bash
-git clone https://github.com/prasangapokharel/PrasangaKit.git MyApp
-cd MyApp
-npm install
-npm start
-```
+**Total: 33+ Components** - All fully typed with TypeScript and theme-aware
 
 ---
 
@@ -247,60 +297,163 @@ export default function ToastExample() {
 ## 📁 Project Structure
 
 ```
-src/
-├── components/ui/           # All UI components
-│   ├── button.tsx
-│   ├── input.tsx
-│   ├── card.tsx
-│   ├── badge.tsx
-│   ├── modal.tsx
-│   ├── toast.tsx
-│   ├── ... (30+ more)
-├── lib/
-│   └── utils.ts             # Utility functions
-├── index.ts                 # Main exports
-└── globals.css              # Global styles
+PrasangaKit/
+├── src/
+│   ├── components/ui/              # All 33+ UI components
+│   │   ├── button.tsx              # Button with variants
+│   │   ├── input.tsx               # Text input
+│   │   ├── card.tsx                # Card container
+│   │   ├── modal.tsx               # Modal dialog
+│   │   ├── sheet.tsx               # Bottom sheet
+│   │   ├── drawer.tsx              # Drawer panel
+│   │   ├── table.tsx               # Data table
+│   │   ├── badge.tsx               # Badge labels
+│   │   ├── avatar.tsx              # Avatar images
+│   │   └── ... (23+ more components)
+│   ├── lib/
+│   │   ├── theme.ts                # Light/dark color palettes
+│   │   ├── theme-context.tsx       # Theme provider & useTheme hook
+│   │   └── utils.ts                # Helper functions
+│   └── index.ts                    # Main exports (all components)
+├── App.tsx                         # Home page demo
+├── app.json                        # Expo config
+├── babel.config.js                 # Babel config
+├── tsconfig.json                   # TypeScript config
+├── package.json                    # Dependencies
+└── README.md                       # This file
+```
 
-App.tsx                       # Demo application
-tailwind.config.js            # Tailwind configuration
-babel.config.js               # Babel configuration with NativeWind
-tsconfig.json                 # TypeScript configuration
-package.json                  # Dependencies
+**For Component Library Use** (`npm install prasanga-ui`):
+- Only the `src/` folder is exported
+- All components available via `import { Button, Card, ... } from 'prasanga-ui'`
+
+**For Starter Kit Use** (`npx prasanga-init MyApp`):
+- Full project template with all dependencies configured
+- Includes working demo pages and examples
+
+---
+
+## 🎨 Theme System
+
+Prasanga UI includes a built-in dark/light theme system using shadcn design colors.
+
+### Using the Theme
+
+```tsx
+import { useTheme } from 'prasanga-ui';
+
+export default function MyComponent() {
+  const { theme, colors, toggleTheme } = useTheme();
+  
+  return (
+    <View style={{ backgroundColor: colors.background }}>
+      <Text style={{ color: colors.foreground }}>
+        Current theme: {theme}
+      </Text>
+      <Button onPress={toggleTheme}>
+        Toggle Theme
+      </Button>
+    </View>
+  );
+}
+```
+
+### Theme Colors (Light & Dark)
+
+**Light Theme**:
+- Background: `#ffffff`
+- Foreground: `#0f172a`
+- Primary: `#3b82f6`
+
+**Dark Theme**:
+- Background: `#0f172a`
+- Foreground: `#f8fafc`
+- Primary: `#60a5fa`
+
+All components automatically adapt to the selected theme using the `useTheme()` hook.
+
+### Color Palette
+
+The complete shadcn color palette is available in `src/lib/theme.ts`:
+
+```tsx
+const lightColors = {
+  background: '#ffffff',
+  foreground: '#0f172a',
+  primary: '#3b82f6',
+  secondary: '#6366f1',
+  success: '#10b981',
+  warning: '#f59e0b',
+  destructive: '#ef4444',
+  // ... and more
+};
+
+const darkColors = {
+  background: '#0f172a',
+  foreground: '#f8fafc',
+  primary: '#60a5fa',
+  secondary: '#818cf8',
+  success: '#34d399',
+  warning: '#fbbf24',
+  destructive: '#f87171',
+  // ... and more
+};
 ```
 
 ---
 
 ## 🔧 Configuration
 
-### Tailwind CSS
+### Theme Configuration
 
-The project includes a pre-configured `tailwind.config.js` with a shadcn-inspired color scheme:
+The theme system is configured in `src/lib/theme.ts` and uses a Context API provider.
 
-```js
-export default {
-  content: ['./App.tsx', './src/**/*.{ts,tsx}'],
-  theme: {
-    extend: {
-      colors: {
-        primary: '#0ea5e9',
-        secondary: '#f97316',
-        success: '#22c55e',
-        // ... more colors
-      },
-    },
-  },
-};
+**Setup in App.tsx:**
+
+```tsx
+import { ThemeProvider } from 'prasanga-ui';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider>
+        {/* Your app here */}
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
+}
 ```
 
-### NativeWind
+### TypeScript Configuration
 
-NativeWind is pre-configured in `babel.config.js`:
+All components include full TypeScript support with proper type definitions. Configuration is in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "jsx": "react-native",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler"
+  }
+}
+```
+
+### Babel Configuration
+
+Configured for Expo in `babel.config.js`:
 
 ```js
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: [['babel-preset-expo'], ['nativewind/babel']],
+    presets: ['babel-preset-expo'],
   };
 };
 ```
@@ -328,33 +481,57 @@ const variants: ButtonVariant[] = ['primary', 'secondary', 'outline'];
 
 ### Custom Styling
 
-All components accept style props for customization:
+All components accept React Native style props for customization:
 
 ```tsx
-<Card style={{ backgroundColor: '#f5f5f5', paddingHorizontal: 20 }}>
-  <Text>Custom Card</Text>
-</Card>
+import { Card, Text, Button } from 'prasanga-ui';
 
-<Button
-  variant="primary"
-  style={{ borderRadius: 12 }}
->
-  Custom Button
-</Button>
-```
-
-### Theme Colors
-
-Edit `tailwind.config.js` to customize colors:
-
-```js
-colors: {
-  primary: '#YOUR_COLOR',
-  secondary: '#YOUR_COLOR',
-  success: '#YOUR_COLOR',
-  // ... etc
+export default function CustomExample() {
+  return (
+    <Card style={{ 
+      backgroundColor: '#f5f5f5', 
+      paddingHorizontal: 20,
+      borderRadius: 12
+    }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+        Custom Card
+      </Text>
+      <Button
+        variant="primary"
+        style={{ borderRadius: 8, marginTop: 12 }}
+      >
+        Custom Button
+      </Button>
+    </Card>
+  );
 }
 ```
+
+### Customize Theme Colors
+
+To customize theme colors, edit `src/lib/theme.ts`:
+
+```tsx
+export const LIGHT_COLORS = {
+  background: '#ffffff',
+  foreground: '#0f172a',
+  primary: '#YOUR_COLOR',        // Change this
+  secondary: '#YOUR_COLOR',      // Change this
+  success: '#10b981',
+  warning: '#f59e0b',
+  destructive: '#ef4444',
+  // ... more colors
+};
+
+export const DARK_COLORS = {
+  background: '#0f172a',
+  foreground: '#f8fafc',
+  primary: '#YOUR_DARK_COLOR',   // Change this
+  // ... rest of dark colors
+};
+```
+
+Then restart your app - all components will update automatically.
 
 ---
 
