@@ -145,21 +145,18 @@ const Toast = React.forwardRef<View, ToastProps>(
       messageContainer: {
         flex: 1,
       },
-      message: {
-        fontSize: 13,
-        fontWeight: "500",
-        color: typeStyle.text,
-        lineHeight: 19,
-      },
-      closeButton: {
-        padding: 6,
-        marginLeft: 12,
-      },
-      closeIcon: {
-        fontSize: 16,
-        color: typeStyle.indicator,
-        fontWeight: "600",
-      },
+       message: {
+         ...typography.alert.message,
+         color: typeStyle.text,
+       },
+       closeButton: {
+         padding: 6,
+         marginLeft: 12,
+       },
+       closeIcon: {
+         ...typography.alert.close,
+         color: typeStyle.indicator,
+       },
     });
 
     return (
