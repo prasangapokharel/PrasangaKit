@@ -421,6 +421,41 @@ colors: {
 
 ---
 
+## 🌐 API Endpoint
+
+Access the Prasanga UI documentation and API at:
+
+- **Website**: https://prasangakit.smmv.shop
+- **API Endpoint**: https://prasangakit.smmv.shop
+- **Documentation**: https://prasangakit.smmv.shop/docs
+
+The API endpoint is configured in your `package.json`:
+
+```json
+{
+  "api": {
+    "endpoint": "https://prasangakit.smmv.shop",
+    "docs": "https://prasangakit.smmv.shop/docs"
+  }
+}
+```
+
+You can access it programmatically:
+
+```tsx
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+const packageJson = JSON.parse(
+  readFileSync(resolve(__dirname, 'package.json'), 'utf8')
+);
+
+const apiEndpoint = packageJson.api.endpoint;
+// https://prasangakit.smmv.shop
+```
+
+---
+
 ## 🚀 Publishing Updates
 
 To publish new versions:
