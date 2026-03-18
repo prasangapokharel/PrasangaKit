@@ -6,7 +6,6 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  useColorScheme,
 } from "react-native";
 import { ThemeProvider, useTheme } from "./src/lib/theme-context";
 import Button from "./src/components/ui/button";
@@ -16,15 +15,17 @@ import Drawer from "./src/components/ui/drawer";
 import Popover from "./src/components/ui/popover";
 import DatePicker from "./src/components/ui/date-picker";
 import Toast from "./src/components/ui/toast";
+import Alert from "./src/components/ui/alert";
+import Badge from "./src/components/ui/badge";
+import Input from "./src/components/ui/input";
 
 function AppContent() {
   const { theme, colors, toggleTheme } = useTheme();
-  const [activeDemo, setActiveDemo] = useState<
-    "sheet" | "drawer" | "popover" | "datepicker" | "buttons" | "inputs" | "cards" | "badges" | null
-  >(null);
+  const [activeDemo, setActiveDemo] = useState<string | null>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [inputValue, setInputValue] = useState("");
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -39,133 +40,135 @@ function AppContent() {
     safeArea: {
       flex: 1,
     },
-    scrollContent: {
-      padding: 24,
-      paddingBottom: 40,
-    },
-    heroSection: {
-      marginBottom: 48,
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
       alignItems: "center",
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      backgroundColor: colors.card,
     },
-    logo: {
-      fontSize: 48,
-      marginBottom: 16,
-    },
-    title: {
-      fontSize: 32,
+    headerTitle: {
+      fontSize: 18,
       fontWeight: "700",
       color: colors.foreground,
-      marginBottom: 12,
-      textAlign: "center",
-      letterSpacing: -0.5,
     },
-    subtitle: {
-      fontSize: 16,
-      color: colors.mutedForeground,
-      textAlign: "center",
-      lineHeight: 24,
-      marginBottom: 8,
-    },
-    badge: {
-      marginTop: 16,
-      backgroundColor: colors.primaryLight,
+    themeToggleButton: {
       paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 20,
-      alignSelf: "center",
-    },
-    badgeText: {
-      fontSize: 12,
-      fontWeight: "600",
-      color: colors.primary,
-      letterSpacing: 0.5,
-    },
-    themeToggle: {
-      position: "absolute",
-      top: 16,
-      right: 16,
-      padding: 12,
-      borderRadius: 12,
+      paddingVertical: 8,
+      borderRadius: 6,
       backgroundColor: colors.muted,
       borderWidth: 1,
       borderColor: colors.border,
     },
     themeToggleText: {
-      fontSize: 18,
-    },
-    demoSection: {
-      marginBottom: 48,
-    },
-    sectionLabel: {
       fontSize: 14,
       fontWeight: "600",
+      color: colors.primary,
+    },
+    scrollContent: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    heroSection: {
+      marginBottom: 40,
+    },
+    heroTitle: {
+      fontSize: 28,
+      fontWeight: "800",
+      color: colors.foreground,
+      marginBottom: 8,
+      letterSpacing: -0.5,
+    },
+    heroSubtitle: {
+      fontSize: 16,
       color: colors.mutedForeground,
+      lineHeight: 24,
       marginBottom: 16,
+    },
+    heroDescription: {
+      fontSize: 14,
+      color: colors.mutedForeground,
+      lineHeight: 22,
+      marginBottom: 20,
+    },
+    badgeContainer: {
+      flexDirection: "row",
+      gap: 8,
+      marginBottom: 20,
+    },
+    sectionContainer: {
+      marginBottom: 40,
+    },
+    sectionHeader: {
+      marginBottom: 16,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: colors.foreground,
+      marginBottom: 4,
       textTransform: "uppercase",
-      letterSpacing: 1,
+      letterSpacing: 0.5,
+    },
+    sectionSubtitle: {
+      fontSize: 13,
+      color: colors.mutedForeground,
     },
     demoGrid: {
       gap: 12,
     },
     demoCard: {
-      borderRadius: 12,
-      padding: 20,
+      borderRadius: 8,
+      padding: 16,
       backgroundColor: colors.card,
       borderWidth: 1,
       borderColor: colors.border,
       shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.05,
-      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.06,
+      shadowRadius: 4,
       elevation: 2,
     },
     demoCardHeader: {
-      flexDirection: "row",
-      alignItems: "flex-start",
       marginBottom: 12,
     },
-    demoEmoji: {
-      fontSize: 24,
-      marginRight: 12,
-    },
-    demoHeaderText: {
-      flex: 1,
-    },
-    demoCategoryText: {
-      fontSize: 12,
-      fontWeight: "500",
-      color: colors.primary,
-      marginBottom: 4,
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-    },
-    demoTitle: {
-      fontSize: 16,
+    demoCardTitle: {
+      fontSize: 15,
       fontWeight: "700",
       color: colors.foreground,
       marginBottom: 4,
     },
-    demoDescription: {
-      fontSize: 14,
+    demoCardLabel: {
+      fontSize: 12,
+      fontWeight: "500",
+      color: colors.primary,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+      marginBottom: 8,
+    },
+    demoCardDescription: {
+      fontSize: 13,
       color: colors.mutedForeground,
-      lineHeight: 20,
+      lineHeight: 19,
       marginBottom: 12,
     },
-    viewButton: {
-      paddingHorizontal: 16,
-      paddingVertical: 10,
+    demoButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 8,
       backgroundColor: colors.primary,
-      borderRadius: 8,
+      borderRadius: 6,
       alignItems: "center",
     },
-    viewButtonText: {
+    demoButtonText: {
       color: colors.primaryForeground,
-      fontSize: 14,
+      fontSize: 13,
       fontWeight: "600",
     },
     footer: {
-      paddingTop: 24,
-      marginTop: 24,
+      paddingTop: 20,
       borderTopWidth: 1,
       borderTopColor: colors.border,
       alignItems: "center",
@@ -174,84 +177,114 @@ function AppContent() {
       fontSize: 12,
       color: colors.mutedForeground,
       textAlign: "center",
-      lineHeight: 20,
+      lineHeight: 18,
     },
-    linkText: {
+    statsContainer: {
+      flexDirection: "row",
+      gap: 12,
+      marginTop: 16,
+    },
+    statBox: {
+      flex: 1,
+      padding: 12,
+      backgroundColor: colors.muted,
+      borderRadius: 6,
+      alignItems: "center",
+    },
+    statNumber: {
+      fontSize: 18,
+      fontWeight: "700",
       color: colors.primary,
-      fontWeight: "600",
+      marginBottom: 4,
+    },
+    statLabel: {
+      fontSize: 11,
+      color: colors.mutedForeground,
+      textAlign: "center",
+    },
+    demoSheetContent: {
+      padding: 20,
+    },
+    demoSheetTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.foreground,
+      marginBottom: 12,
+    },
+    demoSheetDescription: {
+      fontSize: 14,
+      color: colors.mutedForeground,
+      lineHeight: 21,
+      marginBottom: 16,
     },
   });
 
   const demos = [
     {
       id: "buttons",
-      emoji: "🔘",
-      category: "Form",
+      label: "Form Components",
       title: "Buttons",
-      description: "Multiple button variants and sizes for different actions",
+      description: "Multiple button variants and sizes for different actions and contexts",
     },
     {
       id: "inputs",
-      emoji: "⌨️",
-      category: "Form",
+      label: "Form Components",
       title: "Inputs",
-      description: "Text inputs with validation and error states",
+      description: "Text inputs with validation states and helper text support",
     },
     {
       id: "cards",
-      emoji: "🎴",
-      category: "Display",
+      label: "Display Components",
       title: "Cards",
-      description: "Flexible containers with shadow and border options",
+      description: "Flexible containers with customizable shadows and borders",
     },
     {
       id: "badges",
-      emoji: "🏷️",
-      category: "Display",
+      label: "Display Components",
       title: "Badges",
-      description: "Status indicators and labels with multiple variants",
+      description: "Status indicators with multiple variants and styles",
     },
     {
       id: "sheet",
-      emoji: "📄",
-      category: "Overlay",
-      title: "Sheet",
-      description: "Bottom sheet modal with drag to close support",
+      label: "Overlay Components",
+      title: "Bottom Sheet",
+      description: "Modal with drag to close and smooth animations",
     },
     {
       id: "drawer",
-      emoji: "🎯",
-      category: "Overlay",
+      label: "Overlay Components",
       title: "Drawer",
-      description: "Side panel with swipe gesture support",
+      description: "Side panel with swipe gesture support and responsive design",
     },
     {
-      id: "popover",
-      emoji: "💬",
-      category: "Overlay",
-      title: "Popover",
-      description: "Floating positioned content near a trigger",
+      id: "alert",
+      label: "Feedback Components",
+      title: "Alerts",
+      description: "Contextual feedback messages with different severity levels",
     },
     {
       id: "datepicker",
-      emoji: "📅",
-      category: "Form",
+      label: "Form Components",
       title: "Date Picker",
-      description: "Interactive calendar for date selection",
+      description: "Interactive calendar for intuitive date selection",
     },
   ];
 
   return (
     <View style={dynamicStyles.container}>
-      <TouchableOpacity
-        style={dynamicStyles.themeToggle}
-        onPress={toggleTheme}
-        activeOpacity={0.7}
-      >
-        <Text style={dynamicStyles.themeToggleText}>
-          {theme === "light" ? "🌙" : "☀️"}
-        </Text>
-      </TouchableOpacity>
+      {/* Header */}
+      <View style={dynamicStyles.header}>
+        <Text style={dynamicStyles.headerTitle}>Prasanga UI</Text>
+        <TouchableOpacity
+          style={dynamicStyles.themeToggleButton}
+          onPress={toggleTheme}
+          activeOpacity={0.7}
+        >
+          <Text style={dynamicStyles.themeToggleText}>
+            {theme === "light" ? "Dark Mode" : "Light Mode"}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <SafeAreaView style={dynamicStyles.safeArea}>
         <ScrollView
@@ -261,106 +294,202 @@ function AppContent() {
         >
           {/* Hero Section */}
           <View style={dynamicStyles.heroSection}>
-            <Text style={dynamicStyles.logo}>🎨</Text>
-            <Text style={dynamicStyles.title}>Prasanga UI</Text>
-            <Text style={dynamicStyles.subtitle}>
-              Beautiful React Native components with shadcn design
+            <Text style={dynamicStyles.heroTitle}>Beautiful UI Components</Text>
+            <Text style={dynamicStyles.heroSubtitle}>
+              Professional React Native components with shadcn design
             </Text>
-            <View style={dynamicStyles.badge}>
-              <Text style={dynamicStyles.badgeText}>
-                ✨ This is from PrasangaKit • v1.2.0
-              </Text>
+            <Text style={dynamicStyles.heroDescription}>
+              Explore our collection of 32+ fully-typed, theme-aware components built with React Native and Expo. Each component supports both light and dark modes seamlessly.
+            </Text>
+            <View style={dynamicStyles.badgeContainer}>
+              <Badge variant="primary">v1.2.0</Badge>
+              <Badge variant="secondary">32+ Components</Badge>
+              <Badge variant="success">Open Source</Badge>
+            </View>
+
+            <View style={dynamicStyles.statsContainer}>
+              <View style={dynamicStyles.statBox}>
+                <Text style={dynamicStyles.statNumber}>32+</Text>
+                <Text style={dynamicStyles.statLabel}>Components</Text>
+              </View>
+              <View style={dynamicStyles.statBox}>
+                <Text style={dynamicStyles.statNumber}>2</Text>
+                <Text style={dynamicStyles.statLabel}>Themes</Text>
+              </View>
+              <View style={dynamicStyles.statBox}>
+                <Text style={dynamicStyles.statNumber}>100%</Text>
+                <Text style={dynamicStyles.statLabel}>Typed</Text>
+              </View>
             </View>
           </View>
 
           {/* Demo Section */}
-          <View style={dynamicStyles.demoSection}>
-            <Text style={dynamicStyles.sectionLabel}>Explore Components</Text>
+          <View style={dynamicStyles.sectionContainer}>
+            <View style={dynamicStyles.sectionHeader}>
+              <Text style={dynamicStyles.sectionTitle}>Component Library</Text>
+              <Text style={dynamicStyles.sectionSubtitle}>
+                Click to see component demos
+              </Text>
+            </View>
             <View style={dynamicStyles.demoGrid}>
               {demos.map((demo) => (
-                <Card key={demo.id} style={{ borderRadius: 12, overflow: "hidden" }}>
+                <TouchableOpacity
+                  key={demo.id}
+                  onPress={() => {
+                    setActiveDemo(demo.id);
+                    showToast(`Opened ${demo.title} demo`);
+                  }}
+                  activeOpacity={0.7}
+                >
                   <View style={dynamicStyles.demoCard}>
                     <View style={dynamicStyles.demoCardHeader}>
-                      <Text style={dynamicStyles.demoEmoji}>{demo.emoji}</Text>
-                      <View style={dynamicStyles.demoHeaderText}>
-                        <Text style={dynamicStyles.demoCategoryText}>{demo.category}</Text>
-                        <Text style={dynamicStyles.demoTitle}>{demo.title}</Text>
-                      </View>
+                      <Text style={dynamicStyles.demoCardLabel}>{demo.label}</Text>
+                      <Text style={dynamicStyles.demoCardTitle}>{demo.title}</Text>
                     </View>
-                    <Text style={dynamicStyles.demoDescription}>{demo.description}</Text>
-                    <TouchableOpacity
-                      style={dynamicStyles.viewButton}
-                      onPress={() => {
-                        setActiveDemo(demo.id as any);
-                        showToast(`${demo.title} component demo opened`);
-                      }}
-                    >
-                      <Text style={dynamicStyles.viewButtonText}>View Example →</Text>
-                    </TouchableOpacity>
+                    <Text style={dynamicStyles.demoCardDescription}>
+                      {demo.description}
+                    </Text>
+                    <View style={dynamicStyles.demoButton}>
+                      <Text style={dynamicStyles.demoButtonText}>View Demo</Text>
+                    </View>
                   </View>
-                </Card>
+                </TouchableOpacity>
               ))}
+            </View>
+          </View>
+
+          {/* Features Section */}
+          <View style={dynamicStyles.sectionContainer}>
+            <View style={dynamicStyles.sectionHeader}>
+              <Text style={dynamicStyles.sectionTitle}>Key Features</Text>
+            </View>
+            <View style={dynamicStyles.demoGrid}>
+              <Card shadow shadowIntensity="subtle">
+                <View style={{ padding: 4 }}>
+                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
+                    Fully Typed
+                  </Text>
+                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
+                    Complete TypeScript support with proper type definitions
+                  </Text>
+                </View>
+              </Card>
+
+              <Card shadow shadowIntensity="subtle">
+                <View style={{ padding: 4 }}>
+                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
+                    Dark and Light Mode
+                  </Text>
+                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
+                    Toggle between themes with one click
+                  </Text>
+                </View>
+              </Card>
+
+              <Card shadow shadowIntensity="subtle">
+                <View style={{ padding: 4 }}>
+                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
+                    Production Ready
+                  </Text>
+                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
+                    Built with best practices and enterprise standards
+                  </Text>
+                </View>
+              </Card>
+
+              <Card shadow shadowIntensity="subtle">
+                <View style={{ padding: 4 }}>
+                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
+                    Easy Integration
+                  </Text>
+                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
+                    Simple API with sensible defaults
+                  </Text>
+                </View>
+              </Card>
             </View>
           </View>
 
           {/* Footer */}
           <View style={dynamicStyles.footer}>
             <Text style={dynamicStyles.footerText}>
-              Built with React Native, Expo & TypeScript
+              Built with React Native, Expo, and TypeScript
             </Text>
-            <Text style={[dynamicStyles.footerText, { marginTop: 12 }]}>
-              Theme:{" "}
-              <Text style={dynamicStyles.linkText}>
-                {theme === "light" ? "Light Mode ☀️" : "Dark Mode 🌙"}
-              </Text>
+            <Text style={[dynamicStyles.footerText, { marginTop: 8 }]}>
+              Theme: {theme === "light" ? "Light Mode" : "Dark Mode"}
             </Text>
           </View>
         </ScrollView>
       </SafeAreaView>
 
-      {/* Demo Modals */}
-      <Sheet isOpen={activeDemo === "sheet"} onClose={() => setActiveDemo(null)}>
-        <View style={{ padding: 24, paddingBottom: 40 }}>
-          <Text style={[dynamicStyles.demoTitle, { marginBottom: 16 }]}>
-            Sheet Component Demo
+      {/* Sheet Demo */}
+      <Sheet
+        isOpen={activeDemo === "sheet"}
+        onClose={() => setActiveDemo(null)}
+        title="Bottom Sheet Demo"
+      >
+        <View style={dynamicStyles.demoSheetContent}>
+          <Text style={dynamicStyles.demoSheetTitle}>Bottom Sheet Component</Text>
+          <Text style={dynamicStyles.demoSheetDescription}>
+            This is a premium bottom sheet modal with drag to close support. Drag down or tap outside to dismiss.
           </Text>
-          <Text style={dynamicStyles.demoDescription}>
-            This is a bottom sheet modal. Drag down to close or tap outside.
-          </Text>
-            <Button
-              variant="primary"
-              onPress={() => {
-                setActiveDemo(null);
-                showToast("Sheet closed!");
-              }}
-              containerStyle={{ marginTop: 16 }}
-            >
-              Close Sheet
-            </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onPress={() => {
+              setActiveDemo(null);
+              showToast("Sheet closed successfully");
+            }}
+            containerStyle={{ marginTop: 16 }}
+          >
+            Close Sheet
+          </Button>
         </View>
       </Sheet>
 
-      <Drawer isOpen={activeDemo === "drawer"} onClose={() => setActiveDemo(null)}>
-        <View style={{ padding: 24 }}>
-          <Text style={[dynamicStyles.demoTitle, { marginBottom: 16 }]}>
-            Drawer Component Demo
+      {/* Drawer Demo */}
+      <Drawer
+        isOpen={activeDemo === "drawer"}
+        onClose={() => setActiveDemo(null)}
+        title="Drawer Demo"
+      >
+        <View style={dynamicStyles.demoSheetContent}>
+          <Text style={dynamicStyles.demoSheetTitle}>Drawer Component</Text>
+          <Text style={dynamicStyles.demoSheetDescription}>
+            This is a side drawer with swipe gesture support. Swipe left or tap outside to dismiss.
           </Text>
-          <Text style={dynamicStyles.demoDescription}>
-            This is a side drawer. Swipe left or tap the close button to dismiss.
-          </Text>
-            <Button
-              variant="secondary"
-              onPress={() => {
-                setActiveDemo(null);
-                showToast("Drawer closed!");
-              }}
-              containerStyle={{ marginTop: 16 }}
-            >
-              Close Drawer
-            </Button>
+          <Button
+            variant="secondary"
+            size="md"
+            onPress={() => {
+              setActiveDemo(null);
+              showToast("Drawer closed successfully");
+            }}
+            containerStyle={{ marginTop: 16 }}
+          >
+            Close Drawer
+          </Button>
         </View>
       </Drawer>
 
+      {/* Alert Demo */}
+      {activeDemo === "alert" && (
+        <View style={{ padding: 20, gap: 12 }}>
+          <Alert type="info" title="Information" message="This is an informational alert message" />
+          <Alert type="success" title="Success" message="Action completed successfully" />
+          <Alert type="warning" title="Warning" message="Please review this warning carefully" />
+          <Alert type="error" title="Error" message="An error occurred during the operation" />
+          <Button
+            variant="primary"
+            size="md"
+            onPress={() => setActiveDemo(null)}
+          >
+            Close Alerts
+          </Button>
+        </View>
+      )}
+
+      {/* Toast */}
       <Toast
         visible={toastVisible}
         message={toastMessage}

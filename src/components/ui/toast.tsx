@@ -91,27 +91,27 @@ const Toast = React.forwardRef<View, ToastProps>(
 
     const typeStyles: Record<
       ToastType,
-      { bg: string; text: string; icon: string }
+      { bg: string; text: string; indicator: string }
     > = {
       success: {
         bg: colors.successLight,
         text: colors.success,
-        icon: "✓",
+        indicator: colors.success,
       },
       error: {
         bg: colors.destructiveLight,
         text: colors.destructive,
-        icon: "✕",
+        indicator: colors.destructive,
       },
       info: {
         bg: colors.primaryLight,
         text: colors.primary,
-        icon: "ℹ",
+        indicator: colors.primary,
       },
       warning: {
         bg: colors.warningLight,
         text: colors.warning,
-        icon: "!",
+        indicator: colors.warning,
       },
     };
 
@@ -125,15 +125,15 @@ const Toast = React.forwardRef<View, ToastProps>(
         right: 16,
         backgroundColor: typeStyle.bg,
         borderRadius: 8,
-        borderWidth: 1,
-        borderColor: typeStyle.text,
-        paddingHorizontal: 16,
+        borderLeftWidth: 3,
+        borderLeftColor: typeStyle.indicator,
+        paddingHorizontal: 14,
         paddingVertical: 12,
-        shadowColor: colors.foreground,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        elevation: 3,
+        shadowColor: typeStyle.indicator,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
         zIndex: 999,
       },
       content: {
@@ -143,29 +143,20 @@ const Toast = React.forwardRef<View, ToastProps>(
       },
       messageContainer: {
         flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-      },
-      icon: {
-        fontSize: 18,
-        fontWeight: "700",
-        color: typeStyle.text,
-        marginRight: 12,
       },
       message: {
-        flex: 1,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: "500",
         color: typeStyle.text,
-        lineHeight: 20,
+        lineHeight: 19,
       },
       closeButton: {
-        padding: 4,
+        padding: 6,
         marginLeft: 12,
       },
       closeIcon: {
-        fontSize: 18,
-        color: typeStyle.text,
+        fontSize: 16,
+        color: typeStyle.indicator,
         fontWeight: "600",
       },
     });
@@ -183,7 +174,6 @@ const Toast = React.forwardRef<View, ToastProps>(
       >
         <View style={styles.content}>
           <View style={styles.messageContainer}>
-            <Text style={styles.icon}>{typeStyle.icon}</Text>
             <Text style={styles.message} numberOfLines={2}>
               {toastMessage}
             </Text>
