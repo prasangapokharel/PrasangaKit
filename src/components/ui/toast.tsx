@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
+import { typography } from "../../lib/typography";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 

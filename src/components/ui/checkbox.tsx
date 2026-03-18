@@ -7,6 +7,7 @@ import {
   Text,
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
+import { typography } from "../../lib/typography";
 
 interface CheckboxProps {
   /** Whether checkbox is checked */

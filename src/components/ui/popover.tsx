@@ -11,6 +11,7 @@ import {
   LayoutChangeEvent,
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
+import { typography } from "../../lib/typography";
 
 interface PopoverProps {
   /** Whether popover is visible */
