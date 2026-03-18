@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { useTheme } from "../../lib/theme-context";
 
 export type AlertType = "success" | "error" | "warning" | "info";
 
@@ -36,34 +37,36 @@ const Alert = React.forwardRef<View, AlertProps>(
     },
     ref
   ) => {
+    const { colors } = useTheme();
+
     const typeStyles: Record<AlertType, { bg: string; border: string; text: string; icon: string; shadow: string }> = {
       success: {
-        bg: "#f0fdf4",
-        border: "#22c55e",
-        text: "#145231",
+        bg: colors.successLight,
+        border: colors.success,
+        text: colors.foreground,
         icon: "✓",
-        shadow: "#22c55e",
+        shadow: colors.success,
       },
       error: {
-        bg: "#fef2f2",
-        border: "#ef4444",
-        text: "#7f1d1d",
+        bg: colors.destructiveLight,
+        border: colors.destructive,
+        text: colors.foreground,
         icon: "✕",
-        shadow: "#ef4444",
+        shadow: colors.destructive,
       },
       warning: {
-        bg: "#fef7e0",
-        border: "#f59e0b",
-        text: "#78350f",
+        bg: colors.warningLight,
+        border: colors.warning,
+        text: colors.foreground,
         icon: "!",
-        shadow: "#f59e0b",
+        shadow: colors.warning,
       },
       info: {
-        bg: "#f0f8ff",
-        border: "#0e7ae5",
-        text: "#052242",
+        bg: colors.primaryLight,
+        border: colors.primary,
+        text: colors.foreground,
         icon: "ⓘ",
-        shadow: "#0e7ae5",
+        shadow: colors.primary,
       },
     };
 

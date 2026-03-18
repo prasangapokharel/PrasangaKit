@@ -6,7 +6,9 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
+import { ThemeProvider, useTheme } from "./src/lib/theme-context";
 import Button from "./src/components/ui/button";
 import Card from "./src/components/ui/card";
 import Sheet from "./src/components/ui/sheet";
@@ -15,8 +17,11 @@ import Popover from "./src/components/ui/popover";
 import DatePicker from "./src/components/ui/date-picker";
 import Toast from "./src/components/ui/toast";
 
-export default function App() {
-  const [activeDemo, setActiveDemo] = useState<"sheet" | "drawer" | "popover" | "datepicker" | "buttons" | "inputs" | "cards" | "badges" | null>(null);
+function AppContent() {
+  const { theme, colors, toggleTheme } = useTheme();
+  const [activeDemo, setActiveDemo] = useState<
+    "sheet" | "drawer" | "popover" | "datepicker" | "buttons" | "inputs" | "cards" | "badges" | null
+  >(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -26,10 +31,10 @@ export default function App() {
     setToastVisible(true);
   };
 
-  const styles = StyleSheet.create({
+  const dynamicStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#ffffff",
+      backgroundColor: colors.background,
     },
     safeArea: {
       flex: 1,
@@ -38,7 +43,6 @@ export default function App() {
       padding: 24,
       paddingBottom: 40,
     },
-    // Hero Section
     heroSection: {
       marginBottom: 48,
       alignItems: "center",
@@ -50,21 +54,21 @@ export default function App() {
     title: {
       fontSize: 32,
       fontWeight: "700",
-      color: "#1f2937",
+      color: colors.foreground,
       marginBottom: 12,
       textAlign: "center",
       letterSpacing: -0.5,
     },
     subtitle: {
       fontSize: 16,
-      color: "#6b7280",
+      color: colors.mutedForeground,
       textAlign: "center",
       lineHeight: 24,
       marginBottom: 8,
     },
     badge: {
       marginTop: 16,
-      backgroundColor: "#f0f9ff",
+      backgroundColor: colors.primaryLight,
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 20,
@@ -73,17 +77,29 @@ export default function App() {
     badgeText: {
       fontSize: 12,
       fontWeight: "600",
-      color: "#0369a1",
+      color: colors.primary,
       letterSpacing: 0.5,
     },
-    // Demo Grid Section
+    themeToggle: {
+      position: "absolute",
+      top: 16,
+      right: 16,
+      padding: 12,
+      borderRadius: 12,
+      backgroundColor: colors.muted,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    themeToggleText: {
+      fontSize: 18,
+    },
     demoSection: {
       marginBottom: 48,
     },
     sectionLabel: {
       fontSize: 14,
       fontWeight: "600",
-      color: "#9ca3af",
+      color: colors.mutedForeground,
       marginBottom: 16,
       textTransform: "uppercase",
       letterSpacing: 1,
@@ -94,380 +110,271 @@ export default function App() {
     demoCard: {
       borderRadius: 12,
       padding: 20,
-      backgroundColor: "#ffffff",
+      backgroundColor: colors.card,
       borderWidth: 1,
-      borderColor: "#e5e7eb",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 1 },
+      borderColor: colors.border,
+      shadowColor: colors.foreground,
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.05,
       shadowRadius: 8,
       elevation: 2,
     },
+    demoCardHeader: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      marginBottom: 12,
+    },
+    demoEmoji: {
+      fontSize: 24,
+      marginRight: 12,
+    },
+    demoHeaderText: {
+      flex: 1,
+    },
     demoCategoryText: {
-      fontSize: 13,
-      color: "#9ca3af",
-      marginBottom: 6,
+      fontSize: 12,
       fontWeight: "500",
+      color: colors.primary,
+      marginBottom: 4,
       textTransform: "uppercase",
       letterSpacing: 0.5,
     },
     demoTitle: {
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: "700",
-      color: "#1f2937",
-      marginBottom: 8,
-      letterSpacing: -0.3,
+      color: colors.foreground,
+      marginBottom: 4,
     },
     demoDescription: {
       fontSize: 14,
-      color: "#6b7280",
+      color: colors.mutedForeground,
       lineHeight: 20,
-      marginBottom: 16,
+      marginBottom: 12,
     },
-    demoButton: {
+    viewButton: {
+      paddingHorizontal: 16,
       paddingVertical: 10,
+      backgroundColor: colors.primary,
       borderRadius: 8,
+      alignItems: "center",
     },
-    // Footer Section
-    footerSection: {
-      marginTop: 32,
+    viewButtonText: {
+      color: colors.primaryForeground,
+      fontSize: 14,
+      fontWeight: "600",
+    },
+    footer: {
       paddingTop: 24,
+      marginTop: 24,
       borderTopWidth: 1,
-      borderTopColor: "#f0f0f0",
+      borderTopColor: colors.border,
       alignItems: "center",
     },
     footerText: {
       fontSize: 12,
-      color: "#9ca3af",
-      marginBottom: 12,
-      letterSpacing: 0.3,
+      color: colors.mutedForeground,
+      textAlign: "center",
+      lineHeight: 20,
     },
-    footerLink: {
-      fontSize: 14,
+    linkText: {
+      color: colors.primary,
       fontWeight: "600",
-      color: "#3b82f6",
-      marginBottom: 4,
     },
   });
 
   const demos = [
     {
-      id: "sheet",
-      emoji: "📄",
-      title: "Sheet",
-      category: "Overlay Component",
-      description: "Bottom sheet modal that slides up from the bottom with smooth animations.",
-    },
-    {
-      id: "drawer",
-      emoji: "🎪",
-      title: "Drawer",
-      category: "Navigation Component",
-      description: "Side panel drawer that slides from the edge with gesture support.",
-    },
-    {
-      id: "popover",
-      emoji: "💬",
-      title: "Popover",
-      category: "Floating Component",
-      description: "Floating content positioned relative to trigger with smart positioning.",
-    },
-    {
-      id: "datepicker",
-      emoji: "📅",
-      title: "DatePicker",
-      category: "Form Component",
-      description: "Interactive calendar with date selection and optional time picker.",
-    },
-    {
       id: "buttons",
       emoji: "🔘",
+      category: "Form",
       title: "Buttons",
-      category: "Interactive Component",
-      description: "Multiple button variants (primary, secondary, outline, destructive) with sizes.",
+      description: "Multiple button variants and sizes for different actions",
     },
     {
       id: "inputs",
-      emoji: "✏️",
+      emoji: "⌨️",
+      category: "Form",
       title: "Inputs",
-      category: "Form Component",
-      description: "Polished text input with focus states, placeholder, and validation support.",
+      description: "Text inputs with validation and error states",
     },
     {
       id: "cards",
-      emoji: "🎯",
+      emoji: "🎴",
+      category: "Display",
       title: "Cards",
-      category: "Display Component",
-      description: "Elegant card containers with shadows and professional styling.",
+      description: "Flexible containers with shadow and border options",
     },
     {
       id: "badges",
       emoji: "🏷️",
+      category: "Display",
       title: "Badges",
-      category: "Display Component",
-      description: "Status badges with multiple variants and color options.",
+      description: "Status indicators and labels with multiple variants",
+    },
+    {
+      id: "sheet",
+      emoji: "📄",
+      category: "Overlay",
+      title: "Sheet",
+      description: "Bottom sheet modal with drag to close support",
+    },
+    {
+      id: "drawer",
+      emoji: "🎯",
+      category: "Overlay",
+      title: "Drawer",
+      description: "Side panel with swipe gesture support",
+    },
+    {
+      id: "popover",
+      emoji: "💬",
+      category: "Overlay",
+      title: "Popover",
+      description: "Floating positioned content near a trigger",
+    },
+    {
+      id: "datepicker",
+      emoji: "📅",
+      category: "Form",
+      title: "Date Picker",
+      description: "Interactive calendar for date selection",
     },
   ];
 
   return (
-    <SafeAreaView style={[styles.container, styles.safeArea]}>
-      <ScrollView
-        style={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }}
+    <View style={dynamicStyles.container}>
+      <TouchableOpacity
+        style={dynamicStyles.themeToggle}
+        onPress={toggleTheme}
+        activeOpacity={0.7}
       >
-        {/* Hero Section */}
-        <View style={styles.heroSection}>
-          <Text style={styles.logo}>🎨</Text>
-          <Text style={styles.title}>Prasanga UI</Text>
-          <Text style={styles.subtitle}>
-            Modern React Native Components{"\n"}Built with TypeScript & NativeWind
-          </Text>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>✨ This is from PrasangaKit • v1.2.0</Text>
-          </View>
-          <Text style={{ fontSize: 13, color: "#6b7280", marginTop: 16, textAlign: "center", fontWeight: "500" }}>
-            34+ Production-Ready Components
-          </Text>
-        </View>
+        <Text style={dynamicStyles.themeToggleText}>
+          {theme === "light" ? "🌙" : "☀️"}
+        </Text>
+      </TouchableOpacity>
 
-        {/* Demo Components Section */}
-        <View style={styles.demoSection}>
-          <Text style={styles.sectionLabel}>Explore Components</Text>
-          <View style={styles.demoGrid}>
-            {demos.map((demo) => (
-              <Card key={demo.id} style={{ borderRadius: 12, overflow: "hidden" }}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => setActiveDemo(demo.id as any)}
-                >
-                  <View style={styles.demoCard}>
-                    <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 12 }}>
-                      <Text style={{ fontSize: 24, marginRight: 12 }}>{demo.emoji}</Text>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.demoCategoryText}>{demo.category}</Text>
-                        <Text style={styles.demoTitle}>{demo.title}</Text>
+      <SafeAreaView style={dynamicStyles.safeArea}>
+        <ScrollView
+          style={dynamicStyles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          {/* Hero Section */}
+          <View style={dynamicStyles.heroSection}>
+            <Text style={dynamicStyles.logo}>🎨</Text>
+            <Text style={dynamicStyles.title}>Prasanga UI</Text>
+            <Text style={dynamicStyles.subtitle}>
+              Beautiful React Native components with shadcn design
+            </Text>
+            <View style={dynamicStyles.badge}>
+              <Text style={dynamicStyles.badgeText}>
+                ✨ This is from PrasangaKit • v1.2.0
+              </Text>
+            </View>
+          </View>
+
+          {/* Demo Section */}
+          <View style={dynamicStyles.demoSection}>
+            <Text style={dynamicStyles.sectionLabel}>Explore Components</Text>
+            <View style={dynamicStyles.demoGrid}>
+              {demos.map((demo) => (
+                <Card key={demo.id} style={{ borderRadius: 12, overflow: "hidden" }}>
+                  <View style={dynamicStyles.demoCard}>
+                    <View style={dynamicStyles.demoCardHeader}>
+                      <Text style={dynamicStyles.demoEmoji}>{demo.emoji}</Text>
+                      <View style={dynamicStyles.demoHeaderText}>
+                        <Text style={dynamicStyles.demoCategoryText}>{demo.category}</Text>
+                        <Text style={dynamicStyles.demoTitle}>{demo.title}</Text>
                       </View>
                     </View>
-                    <Text style={styles.demoDescription}>{demo.description}</Text>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onPress={() => setActiveDemo(demo.id as any)}
+                    <Text style={dynamicStyles.demoDescription}>{demo.description}</Text>
+                    <TouchableOpacity
+                      style={dynamicStyles.viewButton}
+                      onPress={() => {
+                        setActiveDemo(demo.id as any);
+                        showToast(`${demo.title} component demo opened`);
+                      }}
                     >
-                      View Example
-                    </Button>
+                      <Text style={dynamicStyles.viewButtonText}>View Example →</Text>
+                    </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </View>
           </View>
-        </View>
 
-        {/* Footer Section */}
-        <View style={styles.footerSection}>
-          <Text style={styles.footerText}>Powered by Expo & React Native</Text>
-          <Text style={styles.footerLink}>github.com/prasangapokharel/PrasangaKit</Text>
-          <Text style={styles.footerText}>MIT License</Text>
-        </View>
-      </ScrollView>
-
-      {/* Sheet Demo */}
-      <Sheet
-        visible={activeDemo === "sheet"}
-        onClose={() => setActiveDemo(null)}
-        title="Sheet Example"
-        showCloseButton
-      >
-        <View style={{ gap: 16 }}>
-          <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-            This is a bottom sheet modal that slides up from the bottom of the screen. You can drag it down to close or tap the button below.
-          </Text>
-          <View style={{ gap: 8 }}>
-            <Text style={{ fontSize: 12, fontWeight: "600", color: "#9ca3af", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Features:
+          {/* Footer */}
+          <View style={dynamicStyles.footer}>
+            <Text style={dynamicStyles.footerText}>
+              Built with React Native, Expo & TypeScript
             </Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Smooth slide-up animation</Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Drag to close gesture</Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Customizable height & styling</Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Smooth transitions</Text>
+            <Text style={[dynamicStyles.footerText, { marginTop: 12 }]}>
+              Theme:{" "}
+              <Text style={dynamicStyles.linkText}>
+                {theme === "light" ? "Light Mode ☀️" : "Dark Mode 🌙"}
+              </Text>
+            </Text>
           </View>
-          <Button
-            variant="secondary"
-            onPress={() => {
-              setActiveDemo(null);
-              showToast("Sheet closed successfully!");
-            }}
-          >
-            Close Sheet
-          </Button>
+        </ScrollView>
+      </SafeAreaView>
+
+      {/* Demo Modals */}
+      <Sheet isOpen={activeDemo === "sheet"} onClose={() => setActiveDemo(null)}>
+        <View style={{ padding: 24, paddingBottom: 40 }}>
+          <Text style={[dynamicStyles.demoTitle, { marginBottom: 16 }]}>
+            Sheet Component Demo
+          </Text>
+          <Text style={dynamicStyles.demoDescription}>
+            This is a bottom sheet modal. Drag down to close or tap outside.
+          </Text>
+            <Button
+              variant="primary"
+              onPress={() => {
+                setActiveDemo(null);
+                showToast("Sheet closed!");
+              }}
+              containerStyle={{ marginTop: 16 }}
+            >
+              Close Sheet
+            </Button>
         </View>
       </Sheet>
 
-      {/* Drawer Demo */}
-      <Drawer
-        visible={activeDemo === "drawer"}
-        onClose={() => setActiveDemo(null)}
-        title="Drawer Example"
-        position="left"
-        showCloseButton
-      >
-        <View style={{ gap: 16 }}>
-          <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-            This is a left-side drawer panel that slides from the edge of the screen. You can swipe to close or use the button.
+      <Drawer isOpen={activeDemo === "drawer"} onClose={() => setActiveDemo(null)}>
+        <View style={{ padding: 24 }}>
+          <Text style={[dynamicStyles.demoTitle, { marginBottom: 16 }]}>
+            Drawer Component Demo
           </Text>
-          <View style={{ gap: 8 }}>
-            <Text style={{ fontSize: 12, fontWeight: "600", color: "#9ca3af", textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Features:
-            </Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Smooth slide animation</Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Swipe to close support</Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Left or right positioning</Text>
-            <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>• Professional styling</Text>
-          </View>
-          <Button
-            variant="secondary"
-            onPress={() => {
-              setActiveDemo(null);
-              showToast("Drawer closed successfully!");
-            }}
-          >
-            Close Drawer
-          </Button>
+          <Text style={dynamicStyles.demoDescription}>
+            This is a side drawer. Swipe left or tap the close button to dismiss.
+          </Text>
+            <Button
+              variant="secondary"
+              onPress={() => {
+                setActiveDemo(null);
+                showToast("Drawer closed!");
+              }}
+              containerStyle={{ marginTop: 16 }}
+            >
+              Close Drawer
+            </Button>
         </View>
       </Drawer>
 
-      {/* Popover Demo */}
-      <Popover
-        visible={activeDemo === "popover"}
-        onClose={() => setActiveDemo(null)}
-        trigger={<View />}
-        title="Popover Example"
-        position="bottom"
-      >
-        <Text style={{ fontSize: 13, color: "#6b7280", lineHeight: 18 }}>
-          This is a floating popover component that appears relative to a trigger element. Click outside to close.{"\n\n"}• Smart positioning to avoid edges{"\n"}• Optional arrow indicator{"\n"}• Smooth fade animation
-        </Text>
-      </Popover>
-
-      {/* DatePicker Demo */}
-      <DatePicker
-        visible={activeDemo === "datepicker"}
-        onClose={() => setActiveDemo(null)}
-        value={selectedDate}
-        onChange={(date) => {
-          setSelectedDate(date);
-          setActiveDemo(null);
-          showToast(`Selected: ${date.toLocaleDateString()}`);
-        }}
-        showTime={false}
+      <Toast
+        visible={toastVisible}
+        message={toastMessage}
+        onDismiss={() => setToastVisible(false)}
+        duration={3000}
       />
+    </View>
+  );
+}
 
-      {/* Buttons Demo */}
-      {activeDemo === "buttons" && (
-        <Sheet
-          visible={true}
-          onClose={() => setActiveDemo(null)}
-          title="Button Component"
-          showCloseButton
-        >
-          <View style={{ gap: 12 }}>
-            <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-              Buttons with multiple variants and sizes for every use case.
-            </Text>
-            <Button variant="primary">Primary Button</Button>
-            <Button variant="secondary">Secondary Button</Button>
-            <Button variant="outline">Outline Button</Button>
-            <Button variant="destructive">Destructive Button</Button>
-          </View>
-        </Sheet>
-      )}
-
-      {/* Inputs Demo */}
-      {activeDemo === "inputs" && (
-        <Sheet
-          visible={true}
-          onClose={() => setActiveDemo(null)}
-          title="Input Component"
-          showCloseButton
-        >
-          <View style={{ gap: 12 }}>
-            <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-              Text input with smooth focus states and professional styling.
-            </Text>
-            <Text style={{ fontSize: 12, fontWeight: "600", color: "#9ca3af", marginTop: 8 }}>
-              Try typing below:
-            </Text>
-            <View style={{ height: 40, borderWidth: 1, borderColor: "#e5e7eb", borderRadius: 8, paddingHorizontal: 12, justifyContent: "center" }}>
-              <Text style={{ color: "#6b7280" }}>Focus states • Validation • Placeholders</Text>
-            </View>
-          </View>
-        </Sheet>
-      )}
-
-      {/* Cards Demo */}
-      {activeDemo === "cards" && (
-        <Sheet
-          visible={true}
-          onClose={() => setActiveDemo(null)}
-          title="Card Component"
-          showCloseButton
-        >
-          <View style={{ gap: 12 }}>
-            <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-              Elegant card containers with subtle shadows and professional styling.
-            </Text>
-            <View style={{ backgroundColor: "#f9fafb", borderRadius: 8, padding: 12, borderWidth: 1, borderColor: "#e5e7eb" }}>
-              <Text style={{ fontSize: 13, fontWeight: "600", color: "#1f2937", marginBottom: 4 }}>
-                Card Title
-              </Text>
-              <Text style={{ fontSize: 12, color: "#6b7280", lineHeight: 16 }}>
-                Cards are perfect for organizing content with depth and hierarchy.
-              </Text>
-            </View>
-          </View>
-        </Sheet>
-      )}
-
-      {/* Badges Demo */}
-      {activeDemo === "badges" && (
-        <Sheet
-          visible={true}
-          onClose={() => setActiveDemo(null)}
-          title="Badge Component"
-          showCloseButton
-        >
-          <View style={{ gap: 12 }}>
-            <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-              Status badges with multiple color variants for visual feedback.
-            </Text>
-            <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-              <View style={{ backgroundColor: "#dcfce7", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 }}>
-                <Text style={{ fontSize: 12, color: "#15803d", fontWeight: "600" }}>Success</Text>
-              </View>
-              <View style={{ backgroundColor: "#fee2e2", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 }}>
-                <Text style={{ fontSize: 12, color: "#dc2626", fontWeight: "600" }}>Error</Text>
-              </View>
-              <View style={{ backgroundColor: "#dbeafe", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 }}>
-                <Text style={{ fontSize: 12, color: "#2563eb", fontWeight: "600" }}>Info</Text>
-              </View>
-              <View style={{ backgroundColor: "#fef3c7", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 }}>
-                <Text style={{ fontSize: 12, color: "#d97706", fontWeight: "600" }}>Warning</Text>
-              </View>
-            </View>
-          </View>
-        </Sheet>
-      )}
-
-      {/* Toast Notification */}
-      {toastVisible && (
-        <Toast
-          message={toastMessage}
-          type="success"
-          duration={2000}
-          onDismiss={() => setToastVisible(false)}
-        />
-      )}
-    </SafeAreaView>
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
