@@ -6,42 +6,7 @@ A professional React Native UI component library with **33+ fully-typed, theme-a
 
 ---
 
-## 📦 Two Ways to Use Prasanga UI
-
-### Option 1: Component Library Only (Recommended for existing projects)
-
-**Package**: `prasanga-ui`
-
-Use just the components in your existing React Native project:
-
-```bash
-npm install prasanga-ui
-```
-
-**Import and use components:**
-
-```tsx
-import { Button, Card, Input } from 'prasanga-ui';
-
-export default function App() {
-  return (
-    <Card>
-      <Input placeholder="Enter text" />
-      <Button>Submit</Button>
-    </Card>
-  );
-}
-```
-
-**npm**: https://www.npmjs.com/package/prasanga-ui
-
----
-
-### Option 2: Full Starter Kit (Recommended for new projects)
-
-**Package**: `prasanga-init`
-
-Get a complete, ready-to-use Expo project with all components pre-configured:
+## 🚀 Quick Start (One Command)
 
 ```bash
 npx prasanga-init MyNewApp
@@ -50,50 +15,20 @@ npm install
 npx expo start
 ```
 
-**Includes**:
-- All 33+ UI components
-- Dark/Light theme system
-- Professional home page with demos
-- Pre-configured Expo setup
-- TypeScript configuration
-- All dependencies ready to go
+That's it! Your new Expo app with all 33+ components is ready to build. 
 
-**npm**: https://www.npmjs.com/package/prasanga-init
+Scan the QR code with Expo Go app to see it running on your phone!
 
 ---
 
-## 🚀 Quick Start
+## ✨ What You Get
 
-### For New Projects
-```bash
-npx prasanga-init MyApp
-cd MyApp
-npm install
-npx expo start
-```
-
-### For Existing Projects
-```bash
-npm install prasanga-ui
-```
-
-Then import components:
-```tsx
-import { Button } from 'prasanga-ui';
-```
-
----
-
-## ✨ Features
-
-- **33+ Components**: Fully-typed with TypeScript
-- **Dark/Light Themes**: Automatic theme switching with shadcn colors
-- **Production Ready**: Used in real applications
-- **Zero Config**: Works out of the box
-- **Responsive**: Mobile-first design
-- **Accessible**: Built with accessibility in mind
-- **Official API**: https://prasangakit.smmv.shop
-- **Easy Installation**: One command setup or npm install
+- **33+ UI Components** - Fully-typed with TypeScript
+- **Dark/Light Theme** - Automatic theme switching with shadcn colors
+- **Professional Demo** - See all components in action
+- **Production Ready** - Everything pre-configured
+- **Zero Setup** - Just run the command above
+- **Official API** - https://prasangakit.smmv.shop
 
 ---
 
@@ -633,25 +568,15 @@ const apiEndpoint = packageJson.api.endpoint;
 
 ---
 
-## 🚀 Publishing Updates
-
-To publish new versions:
-
-1. Make changes and test locally
-2. Update version in `package.json`
-3. Run: `npm publish --access public`
-4. Push to GitHub: `git push origin master`
-
----
-
 ## 📦 Dependencies
 
+Core packages included:
 - **Expo** ~54.0.33 - React Native framework
 - **React** 19.1.0 - UI library
 - **React Native** 0.81.5 - Mobile framework
-- **NativeWind** ^2.0.11 - Tailwind for React Native
-- **Tailwind CSS** ^3.4.1 - Utility CSS framework
-- **TypeScript** ~5.9.2 - Type safety
+- **TypeScript** ~5.9.2 - Full type safety
+
+All dependencies are pre-installed when you run `npx prasanga-init`.
 
 ---
 
@@ -659,8 +584,8 @@ To publish new versions:
 
 - [Expo Documentation](https://docs.expo.dev/)
 - [React Native Docs](https://reactnative.dev/)
-- [NativeWind Guide](https://www.nativewind.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Prasanga Website](https://prasangakit.smmv.shop)
 
 ---
 
@@ -675,29 +600,29 @@ MIT - Feel free to use in personal and commercial projects.
 **Prasanga Pokharel**
 
 - GitHub: [@prasangapokharel](https://github.com/prasangapokharel)
-- npm: [@prasanga741](https://www.npmjs.com/~prasanga741)
+- Website: https://prasangakit.smmv.shop
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to submit issues and pull requests.
+Contributions are welcome! Feel free to submit issues and pull requests to:
+- Main repo: [PrasangaKit](https://github.com/prasangapokharel/PrasangaKit)
+- Template repo: [prasanga-init](https://github.com/prasangapokharel/prasanga-init)
 
 ---
 
-## 🎉 Get Started
-
-**Create your first Prasanga app now:**
+## 🎉 Get Started Now
 
 ```bash
-npx prasanga-init MyApp
-cd MyApp
+npx prasanga-init MyNewApp
+cd MyNewApp
 npm install
 npx expo start
 ```
 
-Scan the QR code with Expo Go app to see it running! 📱✨
+Scan the QR code with Expo Go app to see it running on your phone!
 
 ---
 
-**Made with ❤️ for React Native developers**
+**Made with for React Native developers**
