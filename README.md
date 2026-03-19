@@ -4,7 +4,12 @@ A professional React Native UI component library with **33+ fully-typed, theme-a
 
 ## 🎥 Demo & Guide
 
-https://github.com/prasangapokharel/PrasangaKit/assets/demo.mp4
+<div align="center">
+  <video width="800" controls autoplay muted loop>
+    <source src="docs/demo.mp4" type="video/mp4">
+    <img src="docs/demo.png" alt="Demo Preview" width="800">
+  </video>
+</div>
 
 *Watch the complete setup and component showcase guide*
 
