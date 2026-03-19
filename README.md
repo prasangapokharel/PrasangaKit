@@ -2,7 +2,25 @@
 
 A professional React Native UI component library with **33+ fully-typed, theme-aware components** built with **Expo** and **TypeScript**. Features dark/light mode support using shadcn design system colors.
 
-**Website**: https://prasangakit.smmv.shop
+## 🎥 Demo & Guide
+
+https://github.com/prasangapokharel/PrasangaKit/assets/demo.mp4
+
+*Watch the complete setup and component showcase guide*
+
+## 📱 Preview
+
+<div align="center">
+
+### 🌐 Website Preview
+![Website Demo](docs/demo.png)
+*Complete component library showcase*
+
+### 📱 Mobile App Preview  
+![iOS App](docs/ios.png)
+*Running on iOS with Expo Go*
+
+</div>
 
 ---
 
@@ -18,6 +36,8 @@ npx expo start
 That's it! Your new Expo app with all 33+ components is ready to build. 
 
 Scan the QR code with Expo Go app to see it running on your phone!
+
+**Website**: https://prasangakit.smmv.shop
 
 ---
 
