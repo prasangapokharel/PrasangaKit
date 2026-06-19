@@ -10,6 +10,7 @@ import {
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { createShadows } from "../../lib/theme";
+import { radii } from "../../lib/radius";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
@@ -112,7 +113,7 @@ const Toast = React.forwardRef<View, ToastProps>(
         left: 16,
         right: 16,
         backgroundColor: typeStyle.bg,
-        borderRadius: 8,
+        borderRadius: radii.md,
         borderLeftWidth: 3,
         borderLeftColor: typeStyle.indicator,
         paddingHorizontal: 14,

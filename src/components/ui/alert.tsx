@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 export type AlertType = "success" | "error" | "warning" | "info";
 
@@ -77,7 +78,7 @@ const Alert = React.forwardRef<View, AlertProps>(
         backgroundColor: selectedType.bg,
         borderLeftWidth: 3,
         borderLeftColor: selectedType.accent,
-        borderRadius: 8,
+        borderRadius: radii.md,
         paddingHorizontal: 14,
         paddingVertical: 12,
         marginBottom: 12,
@@ -95,7 +96,7 @@ const Alert = React.forwardRef<View, AlertProps>(
       indicator: {
         width: 4,
         height: 4,
-        borderRadius: 2,
+        borderRadius: radii.xs,
         backgroundColor: selectedType.accent,
         marginRight: 10,
         marginTop: 7,

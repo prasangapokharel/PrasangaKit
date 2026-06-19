@@ -1,42 +1,34 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import {
   Modal,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   ViewStyle,
   Animated,
   PanResponder,
-  Dimensions,
+  ScrollView,
+  useWindowDimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { withOpacity } from "../../lib/utils";
+import { radii } from "../../lib/radius";
+import { useLayoutMetrics } from "../../lib/layout";
 
 interface SheetProps {
-  /** Whether sheet is visible (alias for isOpen) */
   visible?: boolean;
-  /** Whether sheet is open */
   isOpen?: boolean;
-  /** Callback when sheet should close */
   onClose: () => void;
-  /** Sheet title */
   title?: string;
-  /** Sheet content */
   children?: React.ReactNode;
-  /** Custom close button text */
-  closeButtonText?: string;
-  /** Show close button */
   showCloseButton?: boolean;
-  /** Container style */
   containerStyle?: ViewStyle;
-  /** Overlay opacity (0-1) */
   overlayOpacity?: number;
-  /** Whether to close on overlay tap */
   closeOnOverlayTap?: boolean;
-  /** Maximum height of sheet (0-1 for percentage, or pixels) */
-  maxHeight?: number | string;
+  maxHeight?: number;
 }
 
 const Sheet = React.forwardRef<View, SheetProps>(
@@ -47,151 +39,173 @@ const Sheet = React.forwardRef<View, SheetProps>(
       onClose,
       title,
       children,
-      closeButtonText = "Close",
       showCloseButton = true,
       containerStyle,
-      overlayOpacity = 0.4,
+      overlayOpacity = 0.45,
       closeOnOverlayTap = true,
-      maxHeight = 0.75,
+      maxHeight,
     },
     ref
   ) => {
     const { colors } = useTheme();
+    const insets = useSafeAreaInsets();
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+    const layout = useLayoutMetrics({ width: windowWidth, height: windowHeight, scale: 1, fontScale: 1 });
     const isSheetOpen = isOpen ?? visible ?? false;
 
-    const slideAnim = useRef(new Animated.Value(Dimensions.get("window").height)).current;
-    const panResponder = useRef(
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: (_, { dy }) => Math.abs(dy) > 5,
-        onPanResponderMove: (_, { dy }) => {
-          if (dy > 0) {
-            slideAnim.setValue(dy);
-          }
-        },
-        onPanResponderRelease: (_, { dy, vy }) => {
-          if (dy > 100 || vy > 0.5) {
-            Animated.timing(slideAnim, {
-              toValue: Dimensions.get("window").height,
-              duration: 300,
-              useNativeDriver: false,
-            }).start(() => onClose());
-          } else {
-            Animated.timing(slideAnim, {
-              toValue: 0,
-              duration: 300,
-              useNativeDriver: false,
-            }).start();
-          }
-        },
-      })
-    ).current;
+    const sheetHeight = maxHeight ?? layout.sheetMaxHeight(0.82);
+    const sheetWidth = layout.sheetMaxWidth;
+
+    const slideAnim = useRef(new Animated.Value(windowHeight)).current;
 
     useEffect(() => {
+      slideAnim.setValue(windowHeight);
       if (isSheetOpen) {
-        Animated.timing(slideAnim, {
+        Animated.spring(slideAnim, {
           toValue: 0,
-          duration: 400,
-          useNativeDriver: false,
+          useNativeDriver: true,
+          damping: 22,
+          stiffness: 220,
         }).start();
       }
-    }, [isSheetOpen, slideAnim]);
+    }, [isSheetOpen, slideAnim, windowHeight]);
+
+    const panResponder = useMemo(
+      () =>
+        PanResponder.create({
+          onStartShouldSetPanResponder: () => true,
+          onMoveShouldSetPanResponder: (_, { dy }) => dy > 4,
+          onPanResponderMove: (_, { dy }) => {
+            if (dy > 0) slideAnim.setValue(dy);
+          },
+          onPanResponderRelease: (_, { dy, vy }) => {
+            if (dy > sheetHeight * 0.2 || vy > 0.75) {
+              Animated.timing(slideAnim, {
+                toValue: windowHeight,
+                duration: 260,
+                useNativeDriver: true,
+              }).start(onClose);
+            } else {
+              Animated.spring(slideAnim, {
+                toValue: 0,
+                useNativeDriver: true,
+                damping: 22,
+                stiffness: 220,
+              }).start();
+            }
+          },
+        }),
+      [slideAnim, sheetHeight, windowHeight, onClose]
+    );
 
     const styles = StyleSheet.create({
       overlay: {
         flex: 1,
-        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
         justifyContent: "flex-end",
+        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
+      },
+      sheetWrap: {
+        width: "100%",
+        alignItems: "center",
+        paddingHorizontal: layout.isPhone ? 0 : 16,
       },
       container: {
+        width: sheetWidth,
+        maxHeight: sheetHeight,
         backgroundColor: colors.card,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        maxHeight: typeof maxHeight === "number" 
-          ? (maxHeight > 1 
-              ? maxHeight 
-              : Dimensions.get("window").height * maxHeight) as any
-          : maxHeight as any,
-        borderTopWidth: 1,
-        borderTopColor: colors.border,
+        borderTopLeftRadius: radii["2xl"],
+        borderTopRightRadius: radii["2xl"],
+        borderBottomLeftRadius: layout.isPhone ? 0 : radii["2xl"],
+        borderBottomRightRadius: layout.isPhone ? 0 : radii["2xl"],
+        borderWidth: 1,
+        borderColor: colors.border,
+        paddingBottom: Math.max(insets.bottom, 12),
       },
-      header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingBottom: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-      },
-       title: {
-         ...typography.heading.sm,
-         color: colors.foreground,
-         flex: 1,
-       },
-       content: {
-         flex: 1,
-         paddingVertical: 16,
-       },
-       closeButton: {
-         padding: 8,
-       },
-       closeButtonText: {
-         ...typography.heading.xs,
-         color: colors.foreground,
-       },
       dragHandle: {
         width: 40,
         height: 4,
         backgroundColor: colors.border,
-        borderRadius: 2,
+        borderRadius: radii.full,
         alignSelf: "center",
+        marginTop: 10,
         marginBottom: 8,
+      },
+      header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingHorizontal: layout.horizontalPadding,
+        paddingBottom: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
+      },
+      title: {
+        ...typography.heading.sm,
+        color: colors.foreground,
+        flex: 1,
+      },
+      closeButton: {
+        padding: 8,
+        borderRadius: radii.sm,
+        backgroundColor: colors.muted,
+        minWidth: 36,
+        height: 36,
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      closeButtonText: {
+        ...typography.heading.xs,
+        color: colors.foreground,
+      },
+      content: {
+        paddingHorizontal: layout.horizontalPadding,
+        paddingTop: 16,
+        paddingBottom: 8,
       },
     });
 
     return (
-      <Modal
-        visible={isSheetOpen}
-        transparent
-        animationType="fade"
-        onRequestClose={onClose}
-      >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={closeOnOverlayTap ? onClose : undefined}
-        >
-          <TouchableOpacity activeOpacity={1}>
+      <Modal visible={isSheetOpen} transparent animationType="fade" onRequestClose={onClose}>
+        <View style={styles.overlay}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={closeOnOverlayTap ? onClose : undefined}
+            accessibilityRole="button"
+            accessibilityLabel="Close sheet"
+          />
+          <View style={styles.sheetWrap}>
             <Animated.View
               {...panResponder.panHandlers}
+              ref={ref}
               style={[
                 styles.container,
                 containerStyle,
-                {
-                  transform: [{ translateY: slideAnim }],
-                },
+                { transform: [{ translateY: slideAnim }] },
               ]}
-              ref={ref}
             >
               <View style={styles.dragHandle} />
-
               {(title || showCloseButton) && (
                 <View style={styles.header}>
-                  <Text style={styles.title}>{title}</Text>
+                  {title ? <Text style={styles.title}>{title}</Text> : <View style={{ flex: 1 }} />}
                   {showCloseButton && (
-                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                    <Pressable style={styles.closeButton} onPress={onClose}>
                       <Text style={styles.closeButtonText}>×</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                 </View>
               )}
-
-              <View style={styles.content}>{children}</View>
+              <ScrollView
+                style={{ maxHeight: sheetHeight - 120 }}
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+                keyboardShouldPersistTaps="handled"
+              >
+                {children}
+              </ScrollView>
             </Animated.View>
-          </TouchableOpacity>
-        </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
     );
   }

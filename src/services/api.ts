@@ -8,7 +8,7 @@
  */
 
 import { API_CONFIG, ERROR_MESSAGES } from "../../constants";
-import { API_CONFIG as API_SCHEMA_CONFIG } from "../lib/api-schema";
+import { API_CONFIG as API_SCHEMA_CONFIG } from "../config/api-schema";
 import type {
   ApiResponse,
   ApiError,

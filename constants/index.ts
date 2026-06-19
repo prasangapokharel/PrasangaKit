@@ -9,7 +9,7 @@
 // App Metadata
 export const APP_CONFIG = {
   NAME: "Prasanga UI",
-  VERSION: "1.4.0",
+  VERSION: "1.5.0",
   BUILD: "1",
   AUTHOR: "Prasanga Team",
   DESCRIPTION: "Premium React Native Component Library",

@@ -3,6 +3,7 @@ import { View, Text, ViewStyle, TextStyle, StyleSheet } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { createShadows } from "../../lib/theme";
+import { radii } from "../../lib/radius";
 
 export type BadgeVariant =
   | "default"
@@ -55,7 +56,7 @@ const Badge = React.forwardRef<View, BadgeProps>(
         backgroundColor: selectedVariant.bg,
         paddingHorizontal: 12,
         paddingVertical: 6,
-        borderRadius: rounded ? 20 : 6,
+        borderRadius: rounded ? radii.full : radii.sm,
         alignSelf: "flex-start",
         borderWidth: 1,
         borderColor: selectedVariant.border,

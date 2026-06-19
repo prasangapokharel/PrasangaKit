@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 export interface TableColumn {
   /** Column key/identifier */
@@ -84,7 +85,7 @@ const Table = React.forwardRef<View, TableProps>(
     const styles = StyleSheet.create({
       container: {
         overflow: "hidden",
-        borderRadius: 8,
+        borderRadius: radii.md,
         borderWidth: bordered ? 1 : 0,
         borderColor: colors.border,
         backgroundColor: colors.card,

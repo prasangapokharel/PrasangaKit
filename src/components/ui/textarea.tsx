@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 interface TextareaProps extends TextInputProps {
   /** Label text */
@@ -53,7 +54,7 @@ const Textarea = React.forwardRef<TextInput, TextareaProps>(
          marginBottom: 6,
        },
        textareaContainer: {
-         borderRadius: 8,
+         borderRadius: radii.md,
          borderWidth: 1,
          borderColor: hasError || error ? colors.destructive : colors.inputBorder,
          backgroundColor: colors.background,

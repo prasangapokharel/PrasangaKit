@@ -12,8 +12,20 @@
 app/
 app.json
 App.tsx
+index.js
 cli.js
 scripts/
+assets/
+constants/
+
+# App scaffolding (not part of the UI library)
+src/config/
+src/services/
+src/hooks/
+src/types/
+src/utils/
+src/lib/api-schema.ts
+src/config/api-schema.ts
 
 # Docs (README is included via package.json files)
 docs/

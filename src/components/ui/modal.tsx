@@ -12,6 +12,7 @@ import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { withOpacity } from "../../lib/utils";
 import { createShadows } from "../../lib/theme";
+import { radii } from "../../lib/radius";
 
 interface ModalComponentProps {
   /** Whether modal is visible */
@@ -61,7 +62,7 @@ const ModalComponent = React.forwardRef<View, ModalComponentProps>(
       },
       container: {
         backgroundColor: colors.background,
-        borderRadius: 12,
+        borderRadius: radii.lg,
         padding: 24,
         width: "85%",
         maxWidth: 400,

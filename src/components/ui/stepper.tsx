@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 interface StepperProps {
   /** Current value */
@@ -78,7 +79,7 @@ const Stepper = React.forwardRef<View, StepperProps>(
        button: {
          width: buttonSize,
          height: buttonSize,
-         borderRadius: 6,
+         borderRadius: radii.sm,
          backgroundColor: colors.primary,
          justifyContent: "center",
          alignItems: "center",

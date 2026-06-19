@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 interface TooltipProps {
   /** Tooltip text */
@@ -50,7 +51,7 @@ const Tooltip = React.forwardRef<View, TooltipProps>(
         backgroundColor: defaultBgColor,
         paddingHorizontal: 12,
         paddingVertical: 8,
-        borderRadius: 6,
+        borderRadius: radii.sm,
         marginBottom: position === "bottom" ? -40 : position === "top" ? 8 : 0,
         marginTop: position === "bottom" ? 8 : 0,
         marginRight: position === "left" ? 8 : 0,

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 import { withOpacity } from "../../lib/utils";
 
 interface SelectOption {
@@ -90,7 +91,7 @@ const Select = React.forwardRef<View, SelectProps>(
          marginBottom: 6,
        },
        selectButton: {
-         borderRadius: 8,
+         borderRadius: radii.md,
          borderWidth: 1,
          borderColor: error ? colors.destructive : colors.inputBorder,
          backgroundColor: colors.background,
@@ -124,7 +125,7 @@ const Select = React.forwardRef<View, SelectProps>(
        },
        modalContent: {
          backgroundColor: colors.background,
-         borderRadius: 12,
+         borderRadius: radii.lg,
          width: "80%",
          maxHeight: 400,
          paddingVertical: 12,
@@ -145,7 +146,7 @@ const Select = React.forwardRef<View, SelectProps>(
        checkbox: {
          width: 20,
          height: 20,
-         borderRadius: 4,
+         borderRadius: radii.xs,
          borderWidth: 2,
          borderColor: colors.inputBorder,
          justifyContent: "center",

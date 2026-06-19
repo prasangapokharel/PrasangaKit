@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 export type InputSize = "sm" | "md" | "lg";
 
@@ -96,7 +97,7 @@ const Input = React.forwardRef<TextInput, InputComponentProps>(
       inputContainer: {
         flexDirection: "row",
         alignItems: "center",
-        borderRadius: 12,
+        borderRadius: radii.lg,
         borderWidth: 1.5,
         borderColor: getBorderColor(),
         backgroundColor: getBackgroundColor(),

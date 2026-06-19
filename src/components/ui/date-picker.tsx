@@ -14,6 +14,7 @@ import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { withOpacity } from "../../lib/utils";
 import { createShadows } from "../../lib/theme";
+import { radii } from "../../lib/radius";
 
 interface DatePickerProps {
   /** Selected date */
@@ -153,7 +154,7 @@ const DatePicker = React.forwardRef<View, DatePickerProps>(
        } as TextStyle,
        navigationButton: {
          padding: 8,
-         borderRadius: 8,
+         borderRadius: radii.md,
          backgroundColor: colors.muted,
        } as ViewStyle,
        navigationText: {
@@ -180,7 +181,7 @@ const DatePicker = React.forwardRef<View, DatePickerProps>(
          aspectRatio: 1,
          justifyContent: "center",
          alignItems: "center",
-         borderRadius: 8,
+         borderRadius: radii.md,
          backgroundColor: colors.background,
        } as ViewStyle,
        dayButtonSelected: {

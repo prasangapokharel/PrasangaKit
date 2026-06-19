@@ -10,6 +10,7 @@ import {
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { createShadows } from "../../lib/theme";
+import { radii } from "../../lib/radius";
 
 interface SliderProps {
   min?: number;
@@ -100,20 +101,20 @@ const Slider = React.forwardRef<View, SliderProps>(
       track: {
         height: 6,
         backgroundColor: track,
-        borderRadius: 999,
+        borderRadius: radii.full,
         justifyContent: "center",
       },
       filledTrack: {
         height: 6,
         backgroundColor: thumb,
-        borderRadius: 999,
+        borderRadius: radii.full,
         position: "absolute",
         left: 0,
       },
       thumb: {
         width: 20,
         height: 20,
-        borderRadius: 10,
+        borderRadius: radii.full,
         backgroundColor: colors.background,
         borderWidth: 2,
         borderColor: thumb,

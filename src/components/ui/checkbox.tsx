@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 interface CheckboxProps {
   /** Whether checkbox is checked */
@@ -52,7 +53,7 @@ const Checkbox = React.forwardRef<View, CheckboxProps>(
       checkbox: {
         width: size,
         height: size,
-        borderRadius: 4,
+        borderRadius: radii.xs,
         borderWidth: 2,
         borderColor: checked ? defaultActiveColor : colors.inputBorder,
         backgroundColor: checked ? defaultActiveColor : colors.background,

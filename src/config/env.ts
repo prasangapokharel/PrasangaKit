@@ -3,7 +3,7 @@
  */
 
 export const env = {
-  APP_VERSION: process.env.EXPO_PUBLIC_APP_VERSION ?? "1.4.0",
+  APP_VERSION: process.env.EXPO_PUBLIC_APP_VERSION ?? "1.5.0",
   APP_NAME: process.env.EXPO_PUBLIC_APP_NAME ?? "Prasanga UI",
   APP_ENVIRONMENT: process.env.EXPO_PUBLIC_ENVIRONMENT ?? "development",
 

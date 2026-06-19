@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { radii } from "../../lib/radius";
 
 interface ListItem {
   id: string | number;
@@ -42,7 +43,7 @@ const List = React.forwardRef<View, ListProps>(
 
     const styles = StyleSheet.create({
       container: {
-        borderRadius: 8,
+        borderRadius: radii.md,
         overflow: "hidden",
         borderWidth: 1,
         borderColor: colors.border,

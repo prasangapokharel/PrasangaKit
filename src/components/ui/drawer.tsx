@@ -1,274 +1,492 @@
-import React, { useRef, useEffect } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Modal,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   ViewStyle,
+  TextStyle,
   Animated,
   PanResponder,
-  Dimensions,
   ScrollView,
-  SafeAreaView,
+  useWindowDimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { withOpacity } from "../../lib/utils";
+import { radii } from "../../lib/radius";
+import { useLayoutMetrics } from "../../lib/layout";
+import { createShadows } from "../../lib/theme";
 
-interface DrawerProps {
-  /** Whether drawer is visible (alias for isOpen) */
-  visible?: boolean;
-  /** Whether drawer is open */
-  isOpen?: boolean;
-  /** Callback when drawer should close */
-  onClose: () => void;
-  /** Drawer title */
-  title?: string;
-  /** Drawer content */
-  children?: React.ReactNode;
-  /** Custom close button text */
-  closeButtonText?: string;
-  /** Show close button */
-  showCloseButton?: boolean;
-  /** Container style */
-  containerStyle?: ViewStyle;
-  /** Overlay opacity (0-1) */
-  overlayOpacity?: number;
-  /** Whether to close on overlay tap */
-  closeOnOverlayTap?: boolean;
-  /** Drawer position: left or right */
-  position?: "left" | "right";
-  /** Drawer width */
-  width?: number | string;
-  /** Drawer size: sm, md, lg */
-  size?: "sm" | "md" | "lg";
+export type DrawerDirection = "top" | "right" | "bottom" | "left";
+
+type DrawerContextValue = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  direction: DrawerDirection;
+};
+
+const DrawerContext = createContext<DrawerContextValue | null>(null);
+
+function useDrawerContext() {
+  const ctx = useContext(DrawerContext);
+  if (!ctx) {
+    throw new Error("Drawer compound components must be used within <Drawer>");
+  }
+  return ctx;
 }
 
-const Drawer = React.forwardRef<View, DrawerProps>(
-  (
-    {
-      visible,
-      isOpen,
-      onClose,
-      title,
-      children,
-      closeButtonText = "Close",
-      showCloseButton = true,
-      containerStyle,
-      overlayOpacity = 0.5,
-      closeOnOverlayTap = true,
-      position = "left",
-      width = "75%",
-      size = "md",
+export interface DrawerProps {
+  children: React.ReactNode;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** shadcn: direction — default bottom */
+  direction?: DrawerDirection;
+  /** @deprecated use direction */
+  position?: "left" | "right";
+}
+
+export function Drawer({
+  children,
+  open,
+  defaultOpen = false,
+  onOpenChange,
+  direction,
+  position,
+}: DrawerProps) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+
+  const resolvedDirection: DrawerDirection =
+    direction ?? (position === "right" ? "right" : position === "left" ? "left" : "bottom");
+
+  const handleOpenChange = useCallback(
+    (next: boolean) => {
+      if (!isControlled) setInternalOpen(next);
+      onOpenChange?.(next);
     },
-    ref
-  ) => {
-    const { colors } = useTheme();
-    const isDrawerOpen = isOpen ?? visible ?? false;
-    const screenWidth = Dimensions.get("window").width;
+    [isControlled, onOpenChange]
+  );
 
-    // Responsive width based on screen size and size prop
-    const getDrawerWidth = () => {
-      if (typeof width === "number") return width;
-      
-      // Device breakpoints
-      const isSmallDevice = screenWidth < 480;
-      const isMediumDevice = screenWidth >= 480 && screenWidth < 768;
-      
-      // Responsive max-widths for premium UX
-      const sizeMap = {
-        sm: isSmallDevice ? Math.min(280, screenWidth * 0.85) : 
-            isMediumDevice ? Math.min(320, screenWidth * 0.7) : 
-            Math.min(400, screenWidth * 0.5),
-        md: isSmallDevice ? Math.min(320, screenWidth * 0.85) : 
-            isMediumDevice ? Math.min(380, screenWidth * 0.75) : 
-            Math.min(450, screenWidth * 0.55),
-        lg: isSmallDevice ? Math.min(360, screenWidth * 0.9) : 
-            isMediumDevice ? Math.min(420, screenWidth * 0.8) : 
-            Math.min(520, screenWidth * 0.6),
-      };
-      
-      if (typeof width === "string" && width.endsWith("%")) {
-        return (parseInt(width) / 100) * screenWidth;
-      }
-      
-      return sizeMap[size];
-    };
+  const value = useMemo(
+    () => ({
+      open: isOpen,
+      onOpenChange: handleOpenChange,
+      direction: resolvedDirection,
+    }),
+    [isOpen, handleOpenChange, resolvedDirection]
+  );
 
-    const drawerWidth = getDrawerWidth();
+  return <DrawerContext.Provider value={value}>{children}</DrawerContext.Provider>;
+}
 
-    const slideAnim = useRef(
-      new Animated.Value(
-        position === "left" ? -drawerWidth : drawerWidth
-      )
-    ).current;
+interface DrawerTriggerProps {
+  children: React.ReactElement;
+  asChild?: boolean;
+}
 
-    const panResponder = useRef(
+export function DrawerTrigger({ children, asChild = true }: DrawerTriggerProps) {
+  const { onOpenChange } = useDrawerContext();
+
+  const open = useCallback(() => onOpenChange(true), [onOpenChange]);
+
+  if (asChild && React.isValidElement(children)) {
+    const child = children as React.ReactElement<{ onPress?: () => void }>;
+    return React.cloneElement(child, {
+      onPress: () => {
+        child.props.onPress?.();
+        open();
+      },
+    });
+  }
+
+  return <Pressable onPress={open}>{children}</Pressable>;
+}
+
+interface DrawerCloseProps {
+  children: React.ReactElement;
+  asChild?: boolean;
+}
+
+export function DrawerClose({ children, asChild = true }: DrawerCloseProps) {
+  const { onOpenChange } = useDrawerContext();
+
+  const close = useCallback(() => onOpenChange(false), [onOpenChange]);
+
+  if (asChild && React.isValidElement(children)) {
+    const child = children as React.ReactElement<{ onPress?: () => void }>;
+    return React.cloneElement(child, {
+      onPress: () => {
+        child.props.onPress?.();
+        close();
+      },
+    });
+  }
+
+  return <Pressable onPress={close}>{children}</Pressable>;
+}
+
+export interface DrawerContentProps {
+  children: React.ReactNode;
+  style?: ViewStyle;
+  /** Max height ratio for top/bottom drawers (shadcn default 50vh) */
+  maxHeightRatio?: number;
+  overlayOpacity?: number;
+  closeOnOverlayTap?: boolean;
+}
+
+export function DrawerContent({
+  children,
+  style,
+  maxHeightRatio = 0.5,
+  overlayOpacity = 0.5,
+  closeOnOverlayTap = true,
+}: DrawerContentProps) {
+  const { open, onOpenChange, direction } = useDrawerContext();
+  const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const layout = useLayoutMetrics({ width: windowWidth, height: windowHeight, scale: 1, fontScale: 1 });
+  const shadows = createShadows(colors.foreground);
+
+  const isVertical = direction === "top" || direction === "bottom";
+  const panelWidth = layout.drawerWidth("md");
+  const panelHeight = Math.min(windowHeight * maxHeightRatio, windowHeight - insets.top - insets.bottom - 40);
+  const sheetWidth = layout.sheetMaxWidth;
+
+  const offscreen = useMemo(() => {
+    switch (direction) {
+      case "left":
+        return -panelWidth;
+      case "right":
+        return panelWidth;
+      case "top":
+        return -panelHeight;
+      case "bottom":
+      default:
+        return panelHeight;
+    }
+  }, [direction, panelWidth, panelHeight]);
+
+  const slideAnim = useRef(new Animated.Value(offscreen)).current;
+
+  useEffect(() => {
+    slideAnim.setValue(offscreen);
+    if (open) {
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 24,
+        stiffness: 240,
+      }).start();
+    }
+  }, [open, slideAnim, offscreen]);
+
+  const close = useCallback(() => onOpenChange(false), [onOpenChange]);
+
+  const panResponder = useMemo(
+    () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: (_, { dx }) => Math.abs(dx) > 5,
-        onPanResponderMove: (_, { dx }) => {
-          if ((position === "left" && dx < 0) || (position === "right" && dx > 0)) {
-            slideAnim.setValue(dx);
-          }
+        onMoveShouldSetPanResponder: (_, g) =>
+          Math.abs(g.dx) > 4 || Math.abs(g.dy) > 4,
+        onPanResponderMove: (_, { dx, dy }) => {
+          if (direction === "left" && dx < 0) slideAnim.setValue(dx);
+          if (direction === "right" && dx > 0) slideAnim.setValue(dx);
+          if (direction === "bottom" && dy > 0) slideAnim.setValue(dy);
+          if (direction === "top" && dy < 0) slideAnim.setValue(dy);
         },
-        onPanResponderRelease: (_, { dx, vx }) => {
-          // Adaptive gesture thresholds based on drawer size
-          const baseThreshold = drawerWidth * 0.25; // More sensitive (was 0.3)
-          const velocityThreshold = 0.4; // More responsive (was 0.5)
-          
-          if (Math.abs(dx) > baseThreshold || Math.abs(vx) > velocityThreshold) {
+        onPanResponderRelease: (_, { dx, dy, vx, vy }) => {
+          const closeH =
+            (direction === "left" && (dx < -panelWidth * 0.25 || vx < -0.5)) ||
+            (direction === "right" && (dx > panelWidth * 0.25 || vx > 0.5)) ||
+            (direction === "bottom" && (dy > panelHeight * 0.2 || vy > 0.75)) ||
+            (direction === "top" && (dy < -panelHeight * 0.2 || vy < -0.75));
+
+          if (closeH) {
             Animated.timing(slideAnim, {
-              toValue: position === "left" ? -drawerWidth : drawerWidth,
-              duration: 300,
-              useNativeDriver: false,
-            }).start(() => onClose());
+              toValue: offscreen,
+              duration: 240,
+              useNativeDriver: true,
+            }).start(close);
           } else {
-            Animated.timing(slideAnim, {
+            Animated.spring(slideAnim, {
               toValue: 0,
-              duration: 300,
-              useNativeDriver: false,
+              useNativeDriver: true,
+              damping: 24,
+              stiffness: 240,
             }).start();
           }
         },
-      })
-    ).current;
+      }),
+    [slideAnim, direction, panelWidth, panelHeight, offscreen, close]
+  );
 
-    useEffect(() => {
-      if (isDrawerOpen) {
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 400,
-          useNativeDriver: false,
-        }).start();
-      }
-    }, [isDrawerOpen, slideAnim, position]);
+  const styles = StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: withOpacity(colors.overlay, overlayOpacity),
+      justifyContent:
+        direction === "bottom"
+          ? "flex-end"
+          : direction === "top"
+            ? "flex-start"
+            : "center",
+      alignItems:
+        direction === "left"
+          ? "flex-start"
+          : direction === "right"
+            ? "flex-end"
+            : "center",
+      flexDirection: isVertical ? "column" : "row",
+    },
+    backdrop: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    panel: {
+      backgroundColor: colors.card,
+      borderColor: colors.border,
+      borderWidth: 1,
+      overflow: "hidden",
+      ...shadows.lg,
+    },
+    panelBottom: {
+      width: sheetWidth,
+      maxHeight: panelHeight,
+      borderTopLeftRadius: radii["2xl"],
+      borderTopRightRadius: radii["2xl"],
+      paddingBottom: Math.max(insets.bottom, 12),
+    },
+    panelTop: {
+      width: sheetWidth,
+      maxHeight: panelHeight,
+      borderBottomLeftRadius: radii["2xl"],
+      borderBottomRightRadius: radii["2xl"],
+      paddingTop: Math.max(insets.top, 12),
+    },
+    panelLeft: {
+      width: panelWidth,
+      height: "100%",
+      borderRightWidth: 1,
+      borderTopRightRadius: radii["2xl"],
+      borderBottomRightRadius: radii["2xl"],
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+    },
+    panelRight: {
+      width: panelWidth,
+      height: "100%",
+      borderLeftWidth: 1,
+      borderTopLeftRadius: radii["2xl"],
+      borderBottomLeftRadius: radii["2xl"],
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+    },
+    handle: {
+      width: 48,
+      height: 5,
+      borderRadius: radii.full,
+      backgroundColor: colors.border,
+      alignSelf: "center",
+      marginTop: direction === "bottom" ? 10 : 0,
+      marginBottom: direction === "top" ? 10 : 8,
+    },
+  });
 
-    const styles = StyleSheet.create({
-      overlay: {
-        flex: 1,
-        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
-        flexDirection: position === "left" ? "row" : "row-reverse",
-      },
-      container: {
-        backgroundColor: colors.card,
-        width: drawerWidth,
-        height: "100%",
-        borderRightWidth: position === "left" ? 1 : 0,
-        borderLeftWidth: position === "right" ? 1 : 0,
-        borderRightColor: position === "left" ? colors.border : "transparent",
-        borderLeftColor: position === "right" ? colors.border : "transparent",
-        shadowColor: colors.foreground,
-        shadowOffset: { 
-          width: position === "left" ? 4 : -4, 
-          height: 0 
+  const panelStyle = [
+    styles.panel,
+    direction === "bottom" && styles.panelBottom,
+    direction === "top" && styles.panelTop,
+    direction === "left" && styles.panelLeft,
+    direction === "right" && styles.panelRight,
+    style,
+    isVertical
+      ? { transform: [{ translateY: slideAnim }] }
+      : { transform: [{ translateX: slideAnim }] },
+  ];
+
+  return (
+    <Modal visible={open} transparent animationType="fade" onRequestClose={close}>
+      <View style={styles.overlay}>
+        <Pressable
+          style={styles.backdrop}
+          onPress={closeOnOverlayTap ? close : undefined}
+          accessibilityLabel="Close drawer"
+        />
+        <Animated.View {...panResponder.panHandlers} style={panelStyle}>
+          {isVertical && <View style={styles.handle} />}
+          {children}
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+}
+
+export function DrawerHeader({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
+  const { direction } = useDrawerContext();
+  const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    header: {
+      paddingHorizontal: 20,
+      paddingTop: direction === "bottom" ? 4 : 16,
+      paddingBottom: 12,
+      alignItems: direction === "bottom" || direction === "top" ? "center" : "flex-start",
+      gap: 6,
+    },
+    border: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      marginBottom: 4,
+    },
+  });
+
+  return (
+    <View style={[styles.header, direction === "left" || direction === "right" ? styles.border : undefined, style]}>
+      {children}
+    </View>
+  );
+}
+
+export function DrawerTitle({ children, style }: { children: React.ReactNode; style?: TextStyle }) {
+  const { direction } = useDrawerContext();
+  const { colors } = useTheme();
+
+  return (
+    <Text
+      style={[
+        typography.heading.sm,
+        {
+          color: colors.foreground,
+          textAlign: direction === "bottom" || direction === "top" ? "center" : "left",
         },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 8,
-      },
-      safeAreaContainer: {
-        flex: 1,
-        backgroundColor: colors.card,
-      },
-      header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-        backgroundColor: colors.card,
-        gap: 12,
-      },
-      title: {
-        ...typography.heading.sm,
-        color: colors.foreground,
-        flex: 1,
-        letterSpacing: -0.3,
-      },
-      closeButton: {
-        padding: 8,
-        borderRadius: 6,
-        backgroundColor: colors.muted,
-        minWidth: 36,
-        height: 36,
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      closeButtonText: {
-        ...typography.heading.xs,
-        color: colors.foreground,
-      },
-      content: {
-        flex: 1,
-      },
-      contentScroll: {
-        padding: 20,
-      },
-    });
+        style,
+      ]}
+    >
+      {children}
+    </Text>
+  );
+}
 
-    return (
-      <Modal
-        visible={isDrawerOpen}
-        transparent
-        animationType="fade"
-        onRequestClose={onClose}
+export function DrawerDescription({ children, style }: { children: React.ReactNode; style?: TextStyle }) {
+  const { direction } = useDrawerContext();
+  const { colors } = useTheme();
+
+  return (
+    <Text
+      style={[
+        typography.body.sm,
+        {
+          color: colors.mutedForeground,
+          textAlign: direction === "bottom" || direction === "top" ? "center" : "left",
+        },
+        style,
+      ]}
+    >
+      {children}
+    </Text>
+  );
+}
+
+export function DrawerBody({
+  children,
+  style,
+  contentStyle,
+}: {
+  children: React.ReactNode;
+  style?: ViewStyle;
+  contentStyle?: ViewStyle;
+}) {
+  return (
+    <ScrollView
+      style={[{ flexGrow: 0 }, style]}
+      contentContainerStyle={[{ paddingHorizontal: 20, paddingVertical: 8 }, contentStyle]}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
+      {children}
+    </ScrollView>
+  );
+}
+
+export function DrawerFooter({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
+  const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    footer: {
+      paddingHorizontal: 20,
+      paddingTop: 12,
+      paddingBottom: 8,
+      gap: 10,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      marginTop: 8,
+    },
+  });
+
+  return <View style={[styles.footer, style]}>{children}</View>;
+}
+
+/** @deprecated Use composable Drawer + DrawerContent */
+export interface LegacyDrawerProps {
+  visible?: boolean;
+  isOpen?: boolean;
+  onClose: () => void;
+  title?: string;
+  children?: React.ReactNode;
+  overlayOpacity?: number;
+  closeOnOverlayTap?: boolean;
+  position?: "left" | "right";
+  size?: "sm" | "md" | "lg";
+}
+
+export function DrawerLegacy({
+  visible,
+  isOpen,
+  onClose,
+  title,
+  children,
+  overlayOpacity = 0.5,
+  closeOnOverlayTap = true,
+  position = "left",
+}: LegacyDrawerProps) {
+  const open = isOpen ?? visible ?? false;
+
+  return (
+    <Drawer
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+      direction={position}
+    >
+      <DrawerContent
+        overlayOpacity={overlayOpacity}
+        closeOnOverlayTap={closeOnOverlayTap}
+        maxHeightRatio={0.82}
       >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={closeOnOverlayTap ? onClose : undefined}
-        >
-          <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} />
-          <Animated.View
-            {...panResponder.panHandlers}
-            style={[
-              styles.container,
-              containerStyle,
-              {
-                transform: [
-                  {
-                    translateX: slideAnim,
-                  },
-                ],
-              },
-            ]}
-            ref={ref}
-          >
-            <SafeAreaView style={styles.safeAreaContainer}>
-              {(title || showCloseButton) && (
-                <View style={styles.header}>
-                  <Text style={styles.title}>{title}</Text>
-                  {showCloseButton && (
-                    <TouchableOpacity 
-                      style={styles.closeButton} 
-                      onPress={onClose}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.closeButtonText}>×</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
-
-              <ScrollView 
-                style={styles.content}
-                contentContainerStyle={styles.contentScroll}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-              >
-                {children}
-              </ScrollView>
-            </SafeAreaView>
-          </Animated.View>
-        </TouchableOpacity>
-      </Modal>
-    );
-  }
-);
+        {title ? (
+          <DrawerHeader>
+            <DrawerTitle>{title}</DrawerTitle>
+          </DrawerHeader>
+        ) : null}
+        <DrawerBody>{children}</DrawerBody>
+      </DrawerContent>
+    </Drawer>
+  );
+}
 
 Drawer.displayName = "Drawer";
 

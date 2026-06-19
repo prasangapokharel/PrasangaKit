@@ -10,6 +10,7 @@ import {
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 import { createShadows } from "../../lib/theme";
+import { radii } from "../../lib/radius";
 
 interface TabItem {
   label: string;
@@ -50,7 +51,7 @@ const Tabs = React.forwardRef<View, TabsProps>(
     const styles = StyleSheet.create({
       container: {
         backgroundColor: colors.background,
-        borderRadius: 8,
+        borderRadius: radii.md,
         overflow: "hidden",
         ...shadows.sm,
       },
