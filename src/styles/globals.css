@@ -52,6 +52,9 @@
     
     /* Skeleton Loading */
     --skeleton: 0 0% 89.8%;            /* light gray */
+
+    /* Overlay (modals, sheets) */
+    --overlay: 0 0% 0%;
     
     /* Radius */
     --radius: 12px;
@@ -107,6 +110,9 @@
     
     /* Skeleton Loading */
     --skeleton: 0 0% 14.9%;            /* dark gray */
+
+    /* Overlay */
+    --overlay: 0 0% 0%;
   }
 }
 

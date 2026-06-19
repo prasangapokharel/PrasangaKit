@@ -9,7 +9,7 @@
 
 import { useState, useCallback } from "react";
 import { VALIDATION_RULES } from "../../constants";
-import type { FormErrors, FieldError } from "../types";
+import type { FormErrors } from "../types";
 
 /**
  * Validation Rule Type

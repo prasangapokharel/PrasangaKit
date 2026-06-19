@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
-import Button from "./button";
+import { withOpacity } from "../../lib/utils";
 
 interface SheetProps {
   /** Whether sheet is visible (alias for isOpen) */
@@ -100,7 +100,7 @@ const Sheet = React.forwardRef<View, SheetProps>(
     const styles = StyleSheet.create({
       overlay: {
         flex: 1,
-        backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
         justifyContent: "flex-end",
       },
       container: {

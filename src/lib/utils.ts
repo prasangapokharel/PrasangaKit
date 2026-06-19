@@ -16,15 +16,26 @@ export function cn(...inputs: (string | undefined | null | boolean)[]): string {
     .trim();
 }
 
+/** Apply alpha to a #RRGGBB hex color (theme tokens) */
+export function withOpacity(hexColor: string, opacity: number): string {
+  const hex = hexColor.replace("#", "");
+  if (hex.length !== 6) return hexColor;
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
 /**
  * Premium shadow configurations for iOS and Android
  * Provides consistent shadow appearance across platforms
  */
-export const platformSpecificStyles = {
-  // Subtle shadows for minimal elevation
+/** Platform shadows using theme foreground color */
+export function getPlatformShadows(shadowColor: string) {
+  return {
   shadowSubtle: {
     ios: {
-      shadowColor: "#000",
+      shadowColor,
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.04,
       shadowRadius: 2,
@@ -37,7 +48,7 @@ export const platformSpecificStyles = {
   // Medium shadows for standard UI elements
   shadowMedium: {
     ios: {
-      shadowColor: "#000",
+      shadowColor,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.06,
       shadowRadius: 4,
@@ -50,7 +61,7 @@ export const platformSpecificStyles = {
   // Premium shadows for elevated cards and buttons
   shadowPremium: {
     ios: {
-      shadowColor: "#000",
+      shadowColor,
       shadowOffset: { width: 0, height: 6 },
       shadowOpacity: 0.10,
       shadowRadius: 12,
@@ -63,7 +74,7 @@ export const platformSpecificStyles = {
   // Brand-colored premium shadows
   shadowBrand: {
     ios: {
-      shadowColor: "#0e7ae5",
+      shadowColor,
       shadowOffset: { width: 0, height: 6 },
       shadowOpacity: 0.25,
       shadowRadius: 12,
@@ -73,53 +84,10 @@ export const platformSpecificStyles = {
     },
   },
 };
+}
 
-/**
- * Premium color definitions
- * Semantic colors for consistent UI theming
- */
-export const premiumColors = {
-  // Primary brand colors
-  primary: {
-    50: "#f0f8ff",
-    500: "#0e7ae5",
-    600: "#0a5fa8",
-    700: "#083a6e",
-  },
-  
-  // Secondary colors
-  secondary: {
-    50: "#f0fdfa",
-    500: "#14b8a6",
-    600: "#0d9488",
-  },
-  
-  // Status colors
-  success: "#22c55e",
-  error: "#ef4444",
-  warning: "#f59e0b",
-  info: "#0e7ae5",
-  
-  // Neutral colors
-  text: {
-    primary: "#0a0a0a",
-    secondary: "#525252",
-    muted: "#737373",
-    light: "#a1a1a1",
-  },
-  
-  background: {
-    default: "#ffffff",
-    alt: "#fafafa",
-    muted: "#f5f5f5",
-  },
-  
-  border: {
-    default: "#e8e8e8",
-    light: "#f5f5f5",
-    focus: "#0e7ae5",
-  },
-};
+/** @deprecated Use getPlatformShadows(colors.foreground) */
+export const platformSpecificStyles = getPlatformShadows("#000000");
 
 /**
  * Responsive breakpoints
@@ -269,6 +237,7 @@ export function getCSSVariableValue(variableName: string, isDark: boolean = fals
     popover: "0 0% 100%",
     "popover-foreground": "0 0% 3.9%",
     skeleton: "0 0% 89.8%",
+    overlay: "0 0% 0%",
   };
 
   const darkModeDefaults: Record<string, string> = {
@@ -295,6 +264,7 @@ export function getCSSVariableValue(variableName: string, isDark: boolean = fals
     popover: "0 0% 3.9%",
     "popover-foreground": "0 0% 98%",
     skeleton: "0 0% 14.9%",
+    overlay: "0 0% 0%",
   };
 
   const defaults = isDark ? darkModeDefaults : lightModeDefaults;

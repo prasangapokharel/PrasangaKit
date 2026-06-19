@@ -10,6 +10,8 @@ import {
 import Button from "./button";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { withOpacity } from "../../lib/utils";
+import { createShadows } from "../../lib/theme";
 
 interface ModalComponentProps {
   /** Whether modal is visible */
@@ -48,11 +50,12 @@ const ModalComponent = React.forwardRef<View, ModalComponentProps>(
     ref
   ) => {
     const { colors } = useTheme();
+    const shadows = createShadows(colors.foreground);
 
     const styles = StyleSheet.create({
       overlay: {
         flex: 1,
-        backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
         justifyContent: "center",
         alignItems: "center",
       },
@@ -62,11 +65,7 @@ const ModalComponent = React.forwardRef<View, ModalComponentProps>(
         padding: 24,
         width: "85%",
         maxWidth: 400,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 12 },
-        shadowOpacity: 0.3,
-        shadowRadius: 12,
-        elevation: 12,
+        ...shadows.xl,
       },
       title: {
         ...typography.heading.xs,

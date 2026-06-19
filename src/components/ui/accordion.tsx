@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { createShadows } from "../../lib/theme";
 
 interface AccordionItem {
   id: string | number;
@@ -34,6 +35,7 @@ const Accordion = React.forwardRef<View, AccordionProps>(
     ref
   ) => {
     const { colors } = useTheme();
+    const shadows = createShadows(colors.foreground);
     const [expanded, setExpanded] = useState<(string | number)[]>([]);
 
     const toggleItem = (id: string | number) => {
@@ -54,11 +56,7 @@ const Accordion = React.forwardRef<View, AccordionProps>(
         borderWidth: 1,
         borderColor: colors.border,
         overflow: "hidden",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
+        ...shadows.sm,
       },
       item: {
         borderBottomWidth: 1,

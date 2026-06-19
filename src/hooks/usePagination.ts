@@ -188,7 +188,6 @@ export function useInfinitePagination(options: UsePaginationOptions = {}) {
     initialLimit = PAGINATION.DEFAULT_LIMIT,
     total: initialTotal = 0,
     onPageChange,
-    onLimitChange,
   } = options;
 
   const [page, setPage] = useState(initialPage);

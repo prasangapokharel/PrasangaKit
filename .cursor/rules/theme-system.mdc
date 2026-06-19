@@ -1,0 +1,27 @@
+---
+description: Theme, globals.css, and ThemeProvider conventions
+globs: "{src/lib/theme*.ts,src/lib/theme-context.tsx,src/styles/globals.css}"
+alwaysApply: false
+---
+
+# Theme System
+
+## Single source of truth
+1. **CSS variables** — `src/styles/globals.css` (`:root` light, `.dark` dark)
+2. **Runtime colors** — `src/lib/theme.ts` reads HSL via `getCSSVariableColor()`
+3. **Context** — `ThemeProvider` + `useTheme()` in `src/lib/theme-context.tsx`
+
+## Adding a token
+1. Add HSL variable to `:root` and `.dark` in `globals.css`.
+2. Add fallback in `getCSSVariableValue()` inside `src/lib/utils.ts`.
+3. Map it in `generateTheme()` in `src/lib/theme.ts`.
+4. Use via `colors.newToken` in components — never duplicate hex values.
+
+## ThemeProvider
+- Must wrap app root (see `App.tsx`).
+- `toggleTheme` / `setTheme` are the only theme switch APIs.
+- Web sync: toggles `document.documentElement.classList` — keep guard for RN.
+
+## Do not
+- Create alternate color objects in individual components.
+- Edit README when changing tokens — code is the contract.

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ViewStyle, TextStyle, StyleSheet } from "react-native";
+import { Text, TextStyle, StyleSheet } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
 

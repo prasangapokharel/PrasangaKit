@@ -1,3 +1,9 @@
+// ===== Theme =====
+export { ThemeProvider, useTheme } from "./lib/theme-context";
+export { getTheme, lightTheme, darkTheme, createShadows } from "./lib/theme";
+export type { Theme, ThemeColors } from "./lib/theme";
+export { typography } from "./lib/typography";
+
 // ===== Core Form Components =====
 export { default as Button, type ButtonVariant, type ButtonSize } from "./components/ui/button";
 export { default as Input, type InputSize } from "./components/ui/input";
@@ -44,5 +50,4 @@ export { default as Tabs } from "./components/ui/tabs";
 export { default as Accordion } from "./components/ui/accordion";
 
 // ===== Utilities =====
-export { cn } from "./lib/utils";
-export { platformSpecificStyles } from "./lib/utils";
+export { cn, withOpacity, getPlatformShadows, platformSpecificStyles } from "./lib/utils";

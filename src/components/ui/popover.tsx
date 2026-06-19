@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { withOpacity } from "../../lib/utils";
+import { createShadows } from "../../lib/theme";
 
 interface PopoverProps {
   /** Whether popover is visible */
@@ -63,6 +65,7 @@ const Popover = React.forwardRef<View, PopoverProps>(
     ref
   ) => {
     const { colors } = useTheme();
+    const shadows = createShadows(colors.foreground);
     const [triggerLayout, setTriggerLayout] = useState<TriggerLayout | null>(null);
     const triggerRef = useRef<View>(null);
 
@@ -111,7 +114,7 @@ const Popover = React.forwardRef<View, PopoverProps>(
       },
       overlay: {
         flex: 1,
-        backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
       },
       popover: {
         position: "absolute",
@@ -120,11 +123,7 @@ const Popover = React.forwardRef<View, PopoverProps>(
         padding: 16,
         width: 250,
         maxHeight: 250,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
-        elevation: 8,
+        ...shadows.lg,
         ...getPopoverPosition(),
       } as ViewStyle,
       arrow: {

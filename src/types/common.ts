@@ -147,6 +147,6 @@ export type Timestamps = {
  * Entity with ID
  * Base type for entities with unique identifier
  */
-export type Entity<T = {}> = {
+export type Entity<T extends object = Record<string, never>> = {
   id: string;
 } & T & Timestamps;

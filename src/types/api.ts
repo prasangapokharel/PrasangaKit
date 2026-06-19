@@ -6,7 +6,7 @@
  * ============================================================================
  */
 
-import type { Timestamps, Entity, Nullable } from "./common";
+import type { Entity, Nullable } from "./common";
 
 /**
  * Authentication Request Types

@@ -7,10 +7,10 @@ import {
   StyleSheet,
   Modal,
   FlatList,
-  TextStyle,
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { withOpacity } from "../../lib/utils";
 
 interface SelectOption {
   label: string;
@@ -118,7 +118,7 @@ const Select = React.forwardRef<View, SelectProps>(
        },
        modalOverlay: {
          flex: 1,
-         backgroundColor: "rgba(0, 0, 0, 0.5)",
+         backgroundColor: withOpacity(colors.overlay, 0.5),
          justifyContent: "center",
          alignItems: "center",
        },

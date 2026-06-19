@@ -6,7 +6,6 @@
  * ============================================================================
  */
 
-import { API_ENDPOINTS } from "../lib/api-schema";
 import type { ApiResponse, ApiError, PaginationParams, User } from "../types";
 
 /**

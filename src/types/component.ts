@@ -6,7 +6,7 @@
  * ============================================================================
  */
 
-import type { ViewStyle, TextStyle, ImageStyle, StyleProp } from "react-native";
+import type { ViewStyle, StyleProp } from "react-native";
 
 /**
  * Common Component Props

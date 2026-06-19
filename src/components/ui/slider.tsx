@@ -1,35 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import {
   View,
   Text,
   ViewStyle,
   StyleSheet,
-  Dimensions,
+  PanResponder,
+  LayoutChangeEvent,
 } from "react-native";
-import { PanResponder, Animated } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { createShadows } from "../../lib/theme";
 
 interface SliderProps {
-  /** Minimum value */
   min?: number;
-  /** Maximum value */
   max?: number;
-  /** Current value */
   value?: number;
-  /** Step size */
   step?: number;
-  /** Callback when value changes */
   onValueChange?: (value: number) => void;
-  /** Disabled state */
   disabled?: boolean;
-  /** Container style */
   containerStyle?: ViewStyle;
-  /** Label */
   label?: string;
-  /** Track color */
   trackColor?: string;
-  /** Thumb color */
   thumbColor?: string;
 }
 
@@ -50,69 +41,91 @@ const Slider = React.forwardRef<View, SliderProps>(
     ref
   ) => {
     const { colors } = useTheme();
-    const defaultTrackColor = trackColor || colors.muted;
-    const defaultThumbColor = thumbColor || colors.primary;
+    const track = trackColor || colors.muted;
+    const thumb = thumbColor || colors.primary;
+    const shadows = createShadows(colors.foreground);
 
     const [sliderWidth, setSliderWidth] = useState(0);
+    const sliderWidthRef = useRef(0);
+
+    const panResponder = useMemo(() => {
+      const clamp = (raw: number) => {
+        let adjusted = Math.round(raw / step) * step;
+        return Math.max(min, Math.min(max, adjusted));
+      };
+
+      const valueFromX = (x: number) => {
+        if (sliderWidthRef.current <= 0) return value;
+        const ratio = Math.max(0, Math.min(1, x / sliderWidthRef.current));
+        return clamp(min + ratio * (max - min));
+      };
+
+      return PanResponder.create({
+        onStartShouldSetPanResponder: () => !disabled,
+        onMoveShouldSetPanResponder: () => !disabled,
+        onPanResponderGrant: (evt) => {
+          onValueChange?.(valueFromX(evt.nativeEvent.locationX));
+        },
+        onPanResponderMove: (evt) => {
+          onValueChange?.(valueFromX(evt.nativeEvent.locationX));
+        },
+      });
+    }, [disabled, min, max, step, value, onValueChange]);
+
     const thumbPosition = (value - min) / (max - min);
 
-     const styles = StyleSheet.create({
-       container: {
-         marginBottom: 12,
-         opacity: disabled ? 0.5 : 1,
-       },
-       labelText: {
-         ...typography.label.md,
-         color: colors.foreground,
-         marginBottom: 8,
-       },
-       labelRow: {
-         flexDirection: "row",
-         justifyContent: "space-between",
-         alignItems: "center",
-       },
-       value: {
-         ...typography.label.md,
-         color: defaultThumbColor,
-       },
+    const styles = StyleSheet.create({
+      container: {
+        marginBottom: 12,
+        opacity: disabled ? 0.5 : 1,
+      },
+      labelText: {
+        ...typography.label.md,
+        color: colors.foreground,
+      },
+      labelRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 8,
+      },
+      value: {
+        ...typography.label.md,
+        color: thumb,
+      },
       sliderContainer: {
-        height: 40,
+        height: 44,
         justifyContent: "center",
-        marginVertical: 8,
       },
       track: {
         height: 6,
-        backgroundColor: defaultTrackColor,
-        borderRadius: 3,
-        position: "relative",
+        backgroundColor: track,
+        borderRadius: 999,
+        justifyContent: "center",
       },
       filledTrack: {
         height: 6,
-        backgroundColor: defaultThumbColor,
-        borderRadius: 3,
-        width: `${thumbPosition * 100}%`,
+        backgroundColor: thumb,
+        borderRadius: 999,
+        position: "absolute",
+        left: 0,
       },
       thumb: {
         width: 20,
         height: 20,
         borderRadius: 10,
-        backgroundColor: defaultThumbColor,
+        backgroundColor: colors.background,
+        borderWidth: 2,
+        borderColor: thumb,
         position: "absolute",
-        top: 10,
-        left: `${thumbPosition * 100}%`,
-        marginLeft: -10,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3,
-        elevation: 5,
+        ...shadows.sm,
       },
     });
 
-    const handleValueChange = (newValue: number) => {
-      let adjustedValue = Math.round(newValue / step) * step;
-      adjustedValue = Math.max(min, Math.min(max, adjustedValue));
-      onValueChange?.(adjustedValue);
+    const onLayout = (event: LayoutChangeEvent) => {
+      const width = event.nativeEvent.layout.width;
+      setSliderWidth(width);
+      sliderWidthRef.current = width;
     };
 
     return (
@@ -125,24 +138,24 @@ const Slider = React.forwardRef<View, SliderProps>(
         )}
         <View
           style={styles.sliderContainer}
-          onLayout={(event) => {
-            setSliderWidth(event.nativeEvent.layout.width);
-          }}
+          onLayout={onLayout}
+          {...panResponder.panHandlers}
         >
           <View style={styles.track}>
             <View
               style={[
                 styles.filledTrack,
-                {
-                  width: `${thumbPosition * 100}%`,
-                },
+                { width: sliderWidth * thumbPosition },
               ]}
             />
             <View
               style={[
                 styles.thumb,
                 {
-                  left: `${thumbPosition * 100}%`,
+                  left: Math.max(
+                    0,
+                    Math.min(sliderWidth - 20, sliderWidth * thumbPosition - 10)
+                  ),
                 },
               ]}
             />

@@ -1,33 +1,51 @@
 import React, { useState } from "react";
+import { ScrollView, SafeAreaView, View } from "react-native";
 import {
-  ScrollView,
-  View,
+  ThemeProvider,
+  useTheme,
+  Button,
+  Card,
   Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
-import { ThemeProvider, useTheme } from "./src/lib/theme-context";
-import { typography } from "./src/lib/typography";
-import Button from "./src/components/ui/button";
-import Card from "./src/components/ui/card";
-import Sheet from "./src/components/ui/sheet";
-import Drawer from "./src/components/ui/drawer";
-import Popover from "./src/components/ui/popover";
-import DatePicker from "./src/components/ui/date-picker";
-import Toast from "./src/components/ui/toast";
-import Alert from "./src/components/ui/alert";
-import Badge from "./src/components/ui/badge";
-import Input from "./src/components/ui/input";
-import Table from "./src/components/ui/table";
+  Badge,
+  Stack,
+  Container,
+  Divider,
+  Sheet,
+  Drawer,
+  Modal,
+  Toast,
+  Alert,
+  Input,
+  Tabs,
+  Table,
+  DatePicker,
+  Switch,
+  Checkbox,
+  Slider,
+  ProgressBar,
+  Spinner,
+} from "./src";
+
+type DemoId =
+  | "buttons"
+  | "inputs"
+  | "feedback"
+  | "table"
+  | "sheet"
+  | "drawer"
+  | "datepicker"
+  | null;
 
 function AppContent() {
   const { theme, colors, toggleTheme } = useTheme();
-  const [activeDemo, setActiveDemo] = useState<string | null>(null);
+  const [activeDemo, setActiveDemo] = useState<DemoId>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [inputValue, setInputValue] = useState("");
+  const [notifications, setNotifications] = useState(true);
+  const [agreed, setAgreed] = useState(false);
+  const [volume, setVolume] = useState(40);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePickerVisible, setDatePickerVisible] = useState(false);
 
   const showToast = (message: string) => {
@@ -35,580 +53,233 @@ function AppContent() {
     setToastVisible(true);
   };
 
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    safeArea: {
-      flex: 1,
-    },
-    header: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      paddingHorizontal: 20,
-      paddingVertical: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-      backgroundColor: colors.card,
-    },
-     headerTitle: {
-       ...typography.heading.sm,
-       color: colors.foreground,
-     },
-     themeToggleButton: {
-       paddingHorizontal: 12,
-       paddingVertical: 8,
-       borderRadius: 6,
-       backgroundColor: colors.muted,
-       borderWidth: 1,
-       borderColor: colors.border,
-     },
-     themeToggleText: {
-       ...typography.label.md,
-       color: colors.primary,
-     },
-    scrollContent: {
-      padding: 20,
-      paddingBottom: 40,
-    },
-    heroSection: {
-      marginBottom: 40,
-    },
-     heroTitle: {
-       ...typography.display.lg,
-       color: colors.foreground,
-       marginBottom: 8,
-       letterSpacing: -0.5,
-     },
-     heroSubtitle: {
-       ...typography.heading.xs,
-       color: colors.mutedForeground,
-       marginBottom: 16,
-     },
-     heroDescription: {
-       ...typography.body.md,
-       color: colors.mutedForeground,
-       marginBottom: 20,
-     },
-    badgeContainer: {
-      flexDirection: "row",
-      gap: 8,
-      marginBottom: 20,
-    },
-    sectionContainer: {
-      marginBottom: 40,
-    },
-    sectionHeader: {
-      marginBottom: 16,
-    },
-     sectionTitle: {
-       ...typography.subheading.lg,
-       color: colors.foreground,
-       marginBottom: 4,
-       textTransform: "uppercase",
-       letterSpacing: 0.5,
-     },
-     sectionSubtitle: {
-       ...typography.body.sm,
-       color: colors.mutedForeground,
-     },
-    demoGrid: {
-      gap: 12,
-    },
-    demoCard: {
-      borderRadius: 8,
-      padding: 16,
-      backgroundColor: colors.card,
-      borderWidth: 1,
-      borderColor: colors.border,
-      shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.06,
-      shadowRadius: 4,
-      elevation: 2,
-    },
-    demoCardHeader: {
-      marginBottom: 12,
-    },
-     demoCardTitle: {
-       ...typography.subheading.md,
-       color: colors.foreground,
-       marginBottom: 4,
-     },
-     demoCardLabel: {
-       ...typography.tiny.md,
-       color: colors.primary,
-       textTransform: "uppercase",
-       letterSpacing: 0.5,
-       marginBottom: 8,
-     },
-     demoCardDescription: {
-       ...typography.body.sm,
-       color: colors.mutedForeground,
-       marginBottom: 12,
-     },
-    demoButton: {
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      backgroundColor: colors.primary,
-      borderRadius: 6,
-      alignItems: "center",
-    },
-     demoButtonText: {
-       ...typography.label.md,
-       color: colors.primaryForeground,
-     },
-     footerText: {
-       ...typography.caption.sm,
-       color: colors.mutedForeground,
-       textAlign: "center",
-     },
-     statNumber: {
-       ...typography.heading.xs,
-       color: colors.primary,
-       marginBottom: 4,
-     },
-     statLabel: {
-       ...typography.tiny.sm,
-       color: colors.mutedForeground,
-       textAlign: "center",
-     },
-     demoSheetTitle: {
-       ...typography.heading.sm,
-       color: colors.foreground,
-       marginBottom: 12,
-     },
-     demoSheetDescription: {
-       ...typography.body.md,
-       color: colors.mutedForeground,
-       marginBottom: 16,
-     },
-     footer: {
-       paddingTop: 20,
-       borderTopWidth: 1,
-       borderTopColor: colors.border,
-       alignItems: "center",
-     },
-     statsContainer: {
-       flexDirection: "row",
-       gap: 12,
-       marginTop: 16,
-     },
-     statBox: {
-       flex: 1,
-       padding: 12,
-       backgroundColor: colors.muted,
-       borderRadius: 6,
-       alignItems: "center",
-     },
-     demoSheetContent: {
-       padding: 20,
-     },
-  });
+  const closeDemo = () => setActiveDemo(null);
 
-   const demos = [
-    {
-      id: "buttons",
-      label: "Form Components",
-      title: "Buttons",
-      description: "Multiple button variants and sizes for different actions and contexts",
-    },
-    {
-      id: "inputs",
-      label: "Form Components",
-      title: "Inputs",
-      description: "Text inputs with validation states and helper text support",
-    },
-    {
-      id: "cards",
-      label: "Display Components",
-      title: "Cards",
-      description: "Flexible containers with customizable shadows and borders",
-    },
-    {
-      id: "badges",
-      label: "Display Components",
-      title: "Badges",
-      description: "Status indicators with multiple variants and styles",
-    },
-    {
-      id: "table",
-      label: "Display Components",
-      title: "Table",
-      description: "Responsive data table with sorting and striping support",
-    },
-    {
-      id: "sheet",
-      label: "Overlay Components",
-      title: "Bottom Sheet",
-      description: "Modal with drag to close and smooth animations",
-    },
-    {
-      id: "drawer",
-      label: "Overlay Components",
-      title: "Drawer",
-      description: "Side panel with swipe gesture support and responsive design",
-    },
-    {
-      id: "alert",
-      label: "Feedback Components",
-      title: "Alerts",
-      description: "Contextual feedback messages with different severity levels",
-    },
-    {
-      id: "datepicker",
-      label: "Form Components",
-      title: "Date Picker",
-      description: "Interactive calendar for intuitive date selection",
-    },
+  const demos = [
+    { id: "buttons" as const, label: "Form", title: "Buttons" },
+    { id: "inputs" as const, label: "Form", title: "Inputs & Controls" },
+    { id: "feedback" as const, label: "Feedback", title: "Alerts & Progress" },
+    { id: "table" as const, label: "Data", title: "Table" },
+    { id: "sheet" as const, label: "Overlay", title: "Bottom Sheet" },
+    { id: "drawer" as const, label: "Overlay", title: "Drawer" },
+    { id: "datepicker" as const, label: "Form", title: "Date Picker" },
   ];
 
   return (
-    <View style={dynamicStyles.container}>
-      {/* Header */}
-      <View style={dynamicStyles.header}>
-        <Text style={dynamicStyles.headerTitle}>Prasanga UI</Text>
-        <TouchableOpacity
-          style={dynamicStyles.themeToggleButton}
-          onPress={toggleTheme}
-          activeOpacity={0.7}
-        >
-          <Text style={dynamicStyles.themeToggleText}>
-            {theme === "light" ? "Dark Mode" : "Light Mode"}
-          </Text>
-        </TouchableOpacity>
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <Container
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        paddingHorizontal={20}
+        paddingVertical={16}
+        style={{
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
+          backgroundColor: colors.card,
+        }}
+      >
+        <Text variant="h4">Prasanga UI</Text>
+        <Button variant="outline" size="sm" onPress={toggleTheme}>
+          {theme === "light" ? "Dark" : "Light"}
+        </Button>
+      </Container>
 
-      <SafeAreaView style={dynamicStyles.safeArea}>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
-          style={dynamicStyles.scrollContent}
+          contentContainerStyle={{ padding: 20, paddingBottom: 48 }}
           showsVerticalScrollIndicator={false}
-          bounces={false}
         >
-          {/* Hero Section */}
-          <View style={dynamicStyles.heroSection}>
-            <Text style={dynamicStyles.heroTitle}>Beautiful UI Components</Text>
-            <Text style={dynamicStyles.heroSubtitle}>
-              Professional React Native components with shadcn design
-            </Text>
-            <Text style={dynamicStyles.heroDescription}>
-              Explore our collection of 32+ fully-typed, theme-aware components built with React Native and Expo. Each component supports both light and dark modes seamlessly.
-            </Text>
-            <View style={dynamicStyles.badgeContainer}>
-              <Badge variant="primary">v1.2.0</Badge>
-              <Badge variant="secondary">32+ Components</Badge>
-              <Badge variant="success">Open Source</Badge>
-            </View>
-
-            <View style={dynamicStyles.statsContainer}>
-              <View style={dynamicStyles.statBox}>
-                <Text style={dynamicStyles.statNumber}>32+</Text>
-                <Text style={dynamicStyles.statLabel}>Components</Text>
-              </View>
-              <View style={dynamicStyles.statBox}>
-                <Text style={dynamicStyles.statNumber}>2</Text>
-                <Text style={dynamicStyles.statLabel}>Themes</Text>
-              </View>
-              <View style={dynamicStyles.statBox}>
-                <Text style={dynamicStyles.statNumber}>100%</Text>
-                <Text style={dynamicStyles.statLabel}>Typed</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Demo Section */}
-          <View style={dynamicStyles.sectionContainer}>
-            <View style={dynamicStyles.sectionHeader}>
-              <Text style={dynamicStyles.sectionTitle}>Component Library</Text>
-              <Text style={dynamicStyles.sectionSubtitle}>
-                Click to see component demos
+          <Stack spacing={16}>
+            <Stack spacing={8}>
+              <Text variant="h1">Premium React Native UI</Text>
+              <Text variant="body" color="muted">
+                shadcn-inspired components with light and dark themes. Fully typed,
+                scalable, and production-ready.
               </Text>
-            </View>
-            <View style={dynamicStyles.demoGrid}>
+              <Stack direction="row" spacing={8} style={{ flexWrap: "wrap" }}>
+                <Badge variant="primary">v1.4.0</Badge>
+                <Badge variant="secondary">33 Components</Badge>
+                <Badge variant="success">TypeScript</Badge>
+              </Stack>
+            </Stack>
+
+            <Card shadow shadowIntensity="medium">
+              <Tabs
+                tabs={[
+                  {
+                    label: "Overview",
+                    content: (
+                      <Stack spacing={12}>
+                        <Text variant="small" color="muted">
+                          Tap a demo card below to explore components. Theme:{" "}
+                          {theme === "light" ? "Light" : "Dark"}.
+                        </Text>
+                        <ProgressBar value={72} label="Library coverage" />
+                        <Stack direction="row" spacing={12} alignItems="center">
+                          <Switch
+                            value={notifications}
+                            onValueChange={setNotifications}
+                          />
+                          <Text variant="small">
+                            Notifications {notifications ? "on" : "off"}
+                          </Text>
+                        </Stack>
+                        <Checkbox
+                          checked={agreed}
+                          onPress={setAgreed}
+                          label="Accept terms"
+                        />
+                        <Slider
+                          label="Volume"
+                          value={volume}
+                          onValueChange={setVolume}
+                        />
+                      </Stack>
+                    ),
+                  },
+                  {
+                    label: "Stats",
+                    content: (
+                      <Stack spacing={12}>
+                        {[
+                          { n: "33+", l: "Components" },
+                          { n: "2", l: "Themes" },
+                          { n: "100%", l: "Typed" },
+                        ].map((s) => (
+                          <Card key={s.l} shadow={false} padding={12}>
+                            <Text variant="h3">{s.n}</Text>
+                            <Text variant="caption" color="muted">
+                              {s.l}
+                            </Text>
+                          </Card>
+                        ))}
+                      </Stack>
+                    ),
+                  },
+                ]}
+              />
+            </Card>
+
+            <Divider />
+
+            <Text variant="h4">Component demos</Text>
+            <Stack spacing={12}>
               {demos.map((demo) => (
-                <TouchableOpacity
-                  key={demo.id}
-                  onPress={() => {
-                    setActiveDemo(demo.id);
-                    showToast(`Opened ${demo.title} demo`);
-                  }}
-                  activeOpacity={0.7}
-                >
-                  <View style={dynamicStyles.demoCard}>
-                    <View style={dynamicStyles.demoCardHeader}>
-                      <Text style={dynamicStyles.demoCardLabel}>{demo.label}</Text>
-                      <Text style={dynamicStyles.demoCardTitle}>{demo.title}</Text>
-                    </View>
-                    <Text style={dynamicStyles.demoCardDescription}>
-                      {demo.description}
-                    </Text>
-                    <View style={dynamicStyles.demoButton}>
-                      <Text style={dynamicStyles.demoButtonText}>View Demo</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
+                <Card key={demo.id} shadow shadowIntensity="subtle" padding={16}>
+                  <Stack spacing={8}>
+                    <Badge variant="default">{demo.label}</Badge>
+                    <Text variant="h4">{demo.title}</Text>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onPress={() => {
+                        setActiveDemo(demo.id);
+                        showToast(`Opened ${demo.title}`);
+                      }}
+                    >
+                      View demo
+                    </Button>
+                  </Stack>
+                </Card>
               ))}
-            </View>
-          </View>
-
-          {/* Features Section */}
-          <View style={dynamicStyles.sectionContainer}>
-            <View style={dynamicStyles.sectionHeader}>
-              <Text style={dynamicStyles.sectionTitle}>Key Features</Text>
-            </View>
-            <View style={dynamicStyles.demoGrid}>
-              <Card shadow shadowIntensity="subtle">
-                <View style={{ padding: 4 }}>
-                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
-                    Fully Typed
-                  </Text>
-                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
-                    Complete TypeScript support with proper type definitions
-                  </Text>
-                </View>
-              </Card>
-
-              <Card shadow shadowIntensity="subtle">
-                <View style={{ padding: 4 }}>
-                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
-                    Dark and Light Mode
-                  </Text>
-                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
-                    Toggle between themes with one click
-                  </Text>
-                </View>
-              </Card>
-
-              <Card shadow shadowIntensity="subtle">
-                <View style={{ padding: 4 }}>
-                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
-                    Production Ready
-                  </Text>
-                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
-                    Built with best practices and enterprise standards
-                  </Text>
-                </View>
-              </Card>
-
-              <Card shadow shadowIntensity="subtle">
-                <View style={{ padding: 4 }}>
-                  <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
-                    Easy Integration
-                  </Text>
-                  <Text style={{ fontSize: 13, color: colors.mutedForeground, lineHeight: 18 }}>
-                    Simple API with sensible defaults
-                  </Text>
-                </View>
-              </Card>
-            </View>
-          </View>
-
-          {/* Footer */}
-          <View style={dynamicStyles.footer}>
-            <Text style={dynamicStyles.footerText}>
-              Built with React Native, Expo, and TypeScript
-            </Text>
-            <Text style={[dynamicStyles.footerText, { marginTop: 8 }]}>
-              Theme: {theme === "light" ? "Light Mode" : "Dark Mode"}
-            </Text>
-          </View>
+            </Stack>
+          </Stack>
         </ScrollView>
       </SafeAreaView>
 
-      {/* Sheet Demo */}
-      <Sheet
-        isOpen={activeDemo === "sheet"}
-        onClose={() => setActiveDemo(null)}
-        title="Bottom Sheet Demo"
+      <Modal
+        visible={activeDemo === "buttons"}
+        onClose={closeDemo}
+        title="Button variants"
       >
-        <View style={dynamicStyles.demoSheetContent}>
-          <Text style={dynamicStyles.demoSheetTitle}>Bottom Sheet Component</Text>
-          <Text style={dynamicStyles.demoSheetDescription}>
-            This is a premium bottom sheet modal with drag to close support. Drag down or tap outside to dismiss.
-          </Text>
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => {
-              setActiveDemo(null);
-              showToast("Sheet closed successfully");
-            }}
-            containerStyle={{ marginTop: 16 }}
-          >
-            Close Sheet
-          </Button>
-        </View>
-      </Sheet>
+        <Stack spacing={8}>
+          <Button variant="primary">Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="destructive">Destructive</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="ghost">Ghost</Button>
+        </Stack>
+      </Modal>
 
-      {/* Drawer Demo */}
-      <Drawer
-        isOpen={activeDemo === "drawer"}
-        onClose={() => setActiveDemo(null)}
-        title="Drawer Demo"
+      <Modal
+        visible={activeDemo === "inputs"}
+        onClose={closeDemo}
+        title="Form inputs"
       >
-        <View style={dynamicStyles.demoSheetContent}>
-          <Text style={dynamicStyles.demoSheetTitle}>Drawer Component</Text>
-          <Text style={dynamicStyles.demoSheetDescription}>
-            This is a side drawer with swipe gesture support. Swipe left or tap outside to dismiss.
-          </Text>
-          <Button
-            variant="secondary"
-            size="md"
-            onPress={() => {
-              setActiveDemo(null);
-              showToast("Drawer closed successfully");
-            }}
-            containerStyle={{ marginTop: 16 }}
-          >
-            Close Drawer
-          </Button>
-        </View>
-      </Drawer>
-
-      {/* Buttons Demo */}
-      {activeDemo === "buttons" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Button Variants
-          </Text>
-          <Button variant="primary" size="md">Primary Button</Button>
-          <Button variant="secondary" size="md">Secondary Button</Button>
-          <Button variant="destructive" size="md">Destructive Button</Button>
-          <Button variant="outline" size="md">Outline Button</Button>
-          <Button variant="ghost" size="md">Ghost Button</Button>
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Demo
-          </Button>
-        </View>
-      )}
-
-      {/* Inputs Demo */}
-      {activeDemo === "inputs" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Input Components
-          </Text>
+        <Stack spacing={4}>
           <Input
-            placeholder="Enter your name"
+            label="Name"
+            placeholder="Your name"
             value={inputValue}
             onChangeText={setInputValue}
           />
-          <Input
-            placeholder="Enter email"
-            editable={false}
-            defaultValue="user@example.com"
-          />
-          <Input
-            placeholder="Password input"
-            secureTextEntry
-          />
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Demo
-          </Button>
-        </View>
-      )}
+          <Input label="Email" placeholder="you@example.com" />
+        </Stack>
+      </Modal>
 
-      {/* Cards Demo */}
-      {activeDemo === "cards" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Card Variants
+      <Modal visible={activeDemo === "feedback"} onClose={closeDemo} title="Feedback">
+        <Stack spacing={8}>
+          <Alert type="info" title="Info" message="Theme-aware alert component" />
+          <Alert type="success" title="Success" message="Action completed" />
+          <ProgressBar value={55} />
+          <Spinner label="Loading…" size="small" />
+        </Stack>
+      </Modal>
+
+      <Modal visible={activeDemo === "table"} onClose={closeDemo} title="Data table">
+        <Table
+          columns={[
+            { key: "name", title: "Name" },
+            { key: "status", title: "Status" },
+            { key: "value", title: "Value", align: "right" },
+          ]}
+          data={[
+            { id: 1, name: "Product A", status: "Active", value: 1200 },
+            { id: 2, name: "Product B", status: "Draft", value: 800 },
+            { id: 3, name: "Product C", status: "Active", value: 1500 },
+          ]}
+          striped
+          bordered
+        />
+      </Modal>
+
+      <Sheet isOpen={activeDemo === "sheet"} onClose={closeDemo} title="Bottom sheet">
+        <Stack spacing={12}>
+          <Text variant="body" color="muted">
+            Drag down or tap outside to dismiss.
           </Text>
-          <Card shadow shadowIntensity="subtle">
-            <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
-              Subtle Card
-            </Text>
-            <Text style={{ fontSize: 13, color: colors.mutedForeground }}>
-              This card has a subtle shadow
-            </Text>
-          </Card>
-          <Card shadow shadowIntensity="medium">
-            <Text style={{ fontSize: 14, fontWeight: "600", color: colors.foreground, marginBottom: 4 }}>
-              Medium Card
-            </Text>
-            <Text style={{ fontSize: 13, color: colors.mutedForeground }}>
-              This card has a medium shadow
-            </Text>
-          </Card>
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Demo
+          <Button variant="primary" onPress={closeDemo}>
+            Close
           </Button>
-        </View>
-      )}
+        </Stack>
+      </Sheet>
 
-      {/* Badges Demo */}
-      {activeDemo === "badges" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Badge Variants
+      <Drawer isOpen={activeDemo === "drawer"} onClose={closeDemo} title="Navigation">
+        <Stack spacing={8}>
+          <Button variant="ghost" onPress={closeDemo}>
+            Home
+          </Button>
+          <Button variant="ghost" onPress={closeDemo}>
+            Settings
+          </Button>
+          <Button variant="outline" onPress={closeDemo}>
+            Close drawer
+          </Button>
+        </Stack>
+      </Drawer>
+
+      <Modal visible={activeDemo === "datepicker"} onClose={closeDemo} title="Date picker">
+        <Stack spacing={12}>
+          <Text variant="body" color="muted">
+            Selected: {selectedDate.toLocaleDateString()}
           </Text>
-          <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-            <Badge variant="primary">Primary</Badge>
-            <Badge variant="secondary">Secondary</Badge>
-            <Badge variant="success">Success</Badge>
-            <Badge variant="warning">Warning</Badge>
-            <Badge variant="destructive">Destructive</Badge>
-            <Badge variant="default">Default</Badge>
-          </View>
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Demo
+          <Button variant="primary" onPress={() => setDatePickerVisible(true)}>
+            Open calendar
           </Button>
-        </View>
-      )}
+        </Stack>
+      </Modal>
 
-      {/* Date Picker Demo */}
-      {activeDemo === "datepicker" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Date Picker
-          </Text>
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setDatePickerVisible(true)}
-            containerStyle={{ marginBottom: 8 }}
-          >
-            Open Date Picker
-          </Button>
-          <Card shadow shadowIntensity="subtle">
-            <Text style={{ fontSize: 14, color: colors.mutedForeground }}>
-              Selected Date: {selectedDate.toLocaleDateString()}
-            </Text>
-          </Card>
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Demo
-          </Button>
-        </View>
-      )}
-
-       {/* Date Picker Modal */}
       <DatePicker
         value={selectedDate}
         onChange={setSelectedDate}
@@ -616,69 +287,11 @@ function AppContent() {
         onClose={() => setDatePickerVisible(false)}
       />
 
-      {/* Table Demo */}
-      {activeDemo === "table" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Data Table
-          </Text>
-          <Table
-            columns={[
-              { key: "id", title: "ID", width: 60, align: "center" },
-              { key: "name", title: "Name", width: 120 },
-              { key: "status", title: "Status", width: 100 },
-              { key: "value", title: "Value", width: 80, align: "right" },
-            ]}
-            data={[
-              { id: 1, name: "Product A", status: "Active", value: 1200 },
-              { id: 2, name: "Product B", status: "Inactive", value: 800 },
-              { id: 3, name: "Product C", status: "Active", value: 1500 },
-              { id: 4, name: "Product D", status: "Pending", value: 950 },
-              { id: 5, name: "Product E", status: "Active", value: 2100 },
-            ]}
-            striped
-            bordered
-            density="normal"
-            containerStyle={{ marginBottom: 12 }}
-          />
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Demo
-          </Button>
-        </View>
-      )}
-
-      {/* Alert Demo */}
-      {activeDemo === "alert" && (
-        <View style={{ padding: 20, gap: 12, backgroundColor: colors.background }}>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.foreground, marginBottom: 8 }}>
-            Alert Variants
-          </Text>
-          <Alert type="info" title="Information" message="This is an informational alert message" />
-          <Alert type="success" title="Success" message="Action completed successfully" />
-          <Alert type="warning" title="Warning" message="Please review this warning carefully" />
-          <Alert type="error" title="Error" message="An error occurred during the operation" />
-          <Button
-            variant="primary"
-            size="md"
-            onPress={() => setActiveDemo(null)}
-            containerStyle={{ marginTop: 8 }}
-          >
-            Close Alerts
-          </Button>
-        </View>
-      )}
-
-      {/* Toast */}
       <Toast
         visible={toastVisible}
         message={toastMessage}
+        type="success"
         onDismiss={() => setToastVisible(false)}
-        duration={3000}
       />
     </View>
   );

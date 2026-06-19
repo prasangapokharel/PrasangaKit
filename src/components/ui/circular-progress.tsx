@@ -41,8 +41,6 @@ const CircularProgress = React.forwardRef<View, CircularProgressProps>(
     const defaultBackgroundColor = backgroundColor || colors.muted;
 
     const percentage = Math.min(Math.max(value, 0), 100);
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
     const styles = StyleSheet.create({
       container: {

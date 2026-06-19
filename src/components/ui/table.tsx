@@ -5,8 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   ViewStyle,
-  TextStyle,
-  FlatList,
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
@@ -155,15 +153,7 @@ const Table = React.forwardRef<View, TableProps>(
       },
     });
 
-    // Calculate total width for responsive columns
-    const calculateColumnWidth = (column: TableColumn, index: number): string => {
-      if (column.width) {
-        if (typeof column.width === "string") return column.width;
-        return `${column.width}px`;
-      }
-      // Default: divide equally
-      return `${100 / columns.length}%`;
-    };
+    // Calculate total width for responsive columns (reserved for future fixed-width mode)
 
     if (data.length === 0) {
       return (

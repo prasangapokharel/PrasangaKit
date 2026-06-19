@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   ViewStyle,
   StyleSheet,
-  FlatList,
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";

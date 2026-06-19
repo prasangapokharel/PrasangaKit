@@ -1,0 +1,50 @@
+# Development & secrets
+.env
+.env.*
+!.env.example
+
+# Version control & CI
+.git
+.gitignore
+.github
+
+# Demo app (not part of npm package)
+app/
+app.json
+App.tsx
+cli.js
+scripts/
+
+# Docs (README is included via package.json files)
+docs/
+
+# Tooling
+.expo/
+.vscode/
+eslint.config.js
+babel.config.js
+
+# Tests
+tests/
+__tests__/
+coverage/
+*.test.ts
+*.test.tsx
+
+# Locks & modules
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Extra markdown (keep README)
+*.md
+!README.md
+
+# Cursor local rules (optional for consumers)
+.cursor/
+AGENT.md

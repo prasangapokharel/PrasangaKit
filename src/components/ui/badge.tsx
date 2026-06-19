@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ViewStyle, TextStyle, StyleSheet } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { createShadows } from "../../lib/theme";
 
 export type BadgeVariant =
   | "default"
@@ -47,6 +48,7 @@ const Badge = React.forwardRef<View, BadgeProps>(
     };
 
     const selectedVariant = variantStyles[variant];
+    const shadows = createShadows(colors.foreground);
 
     const styles = StyleSheet.create({
       badge: {
@@ -57,11 +59,7 @@ const Badge = React.forwardRef<View, BadgeProps>(
         alignSelf: "flex-start",
         borderWidth: 1,
         borderColor: selectedVariant.border,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.04,
-        shadowRadius: 2,
-        elevation: 1,
+        ...shadows.sm,
       },
       text: {
         ...typography.tiny.md,

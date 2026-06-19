@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
-import Button from "./button";
+import { withOpacity } from "../../lib/utils";
 
 interface DrawerProps {
   /** Whether drawer is visible (alias for isOpen) */
@@ -67,7 +67,6 @@ const Drawer = React.forwardRef<View, DrawerProps>(
     const { colors } = useTheme();
     const isDrawerOpen = isOpen ?? visible ?? false;
     const screenWidth = Dimensions.get("window").width;
-    const screenHeight = Dimensions.get("window").height;
 
     // Responsive width based on screen size and size prop
     const getDrawerWidth = () => {
@@ -76,7 +75,6 @@ const Drawer = React.forwardRef<View, DrawerProps>(
       // Device breakpoints
       const isSmallDevice = screenWidth < 480;
       const isMediumDevice = screenWidth >= 480 && screenWidth < 768;
-      const isLargeDevice = screenWidth >= 768;
       
       // Responsive max-widths for premium UX
       const sizeMap = {
@@ -150,7 +148,7 @@ const Drawer = React.forwardRef<View, DrawerProps>(
     const styles = StyleSheet.create({
       overlay: {
         flex: 1,
-        backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+        backgroundColor: withOpacity(colors.overlay, overlayOpacity),
         flexDirection: position === "left" ? "row" : "row-reverse",
       },
       container: {

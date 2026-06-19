@@ -1,0 +1,38 @@
+---
+description: React Native UI component patterns for src/components/ui
+globs: src/components/ui/**/*.tsx
+alwaysApply: false
+---
+
+# UI Component Rules
+
+## Structure
+```tsx
+const MyComponent = React.forwardRef<View, MyComponentProps>((props, ref) => {
+  const { colors } = useTheme();
+  const styles = StyleSheet.create({ /* theme-driven */ });
+  return <View ref={ref} style={styles.root}>{/* ... */}</View>;
+});
+MyComponent.displayName = "MyComponent";
+export default MyComponent;
+```
+
+## Theming
+- Colors: `useTheme().colors` — never hardcode `#hex` for semantic colors.
+- Typography: `typography.*` from `src/lib/typography.ts` — no raw `fontSize: 14`.
+- Light/dark: tokens live in `src/styles/globals.css`; do not fork palettes in components.
+
+## UX
+- Always handle `disabled`, loading, and error states where applicable.
+- Touch targets ≥ 44pt height for primary controls.
+- Overlays (Modal, Sheet, Drawer): support `onRequestClose`, overlay dismiss, safe areas.
+
+## Styling
+- Prefer `StyleSheet.create` over inline objects when using theme values.
+- Use `platformSpecificStyles` for elevation/shadows when cross-platform parity matters.
+- Accept `style` / `containerStyle` overrides on public components.
+
+## Avoid
+- Business logic, fetch calls, or navigation inside UI files.
+- Web-only APIs without `typeof document !== "undefined"` guards (see theme-context).
+- New color/spacing scales — use existing `spacing`, `borderRadius`, `typography`.

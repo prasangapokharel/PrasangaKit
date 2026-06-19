@@ -8,7 +8,6 @@
  */
 
 import { useEffect, useState, useCallback } from "react";
-import { apiService } from "../services/api";
 import type { ApiResponse, ApiError, AsyncState, LoadingState } from "../types";
 
 /**
@@ -146,7 +145,7 @@ export function useApiPaginated<T>(
   initialLimit: number = 20
 ) {
   const [page, setPage] = useState(initialPage);
-  const [limit, setLimit] = useState(initialLimit);
+  const [limit] = useState(initialLimit);
   const [total, setTotal] = useState(0);
 
   const apiCall = useCallback(async (): Promise<ApiResponse<T[]>> => {

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { createShadows } from "../../lib/theme";
 
 interface TabItem {
   label: string;
@@ -42,6 +43,7 @@ const Tabs = React.forwardRef<View, TabsProps>(
     const { colors } = useTheme();
     const defaultActiveColor = activeColor || colors.primary;
     const defaultInactiveColor = inactiveColor || colors.mutedForeground;
+    const shadows = createShadows(colors.foreground);
 
     const [activeTab, setActiveTab] = useState(defaultActive);
 
@@ -50,11 +52,7 @@ const Tabs = React.forwardRef<View, TabsProps>(
         backgroundColor: colors.background,
         borderRadius: 8,
         overflow: "hidden",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
+        ...shadows.sm,
       },
       tabBar: {
         flexDirection: "row",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,25 +9,18 @@ import {
 } from "react-native";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { createShadows } from "../../lib/theme";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
 interface ToastProps {
-  /** Toast message (alias for message) */
   message?: string;
-  /** Toast message (for backward compatibility with visible prop) */
   msg?: string;
-  /** Whether toast is visible */
   visible?: boolean;
-  /** Toast type */
   type?: ToastType;
-  /** Duration in milliseconds (0 = no auto-dismiss) */
   duration?: number;
-  /** Callback when toast is dismissed */
   onDismiss?: () => void;
-  /** Custom container style */
   containerStyle?: ViewStyle;
-  /** Position */
   position?: "top" | "bottom";
 }
 
@@ -48,6 +41,18 @@ const Toast = React.forwardRef<View, ToastProps>(
     const { colors } = useTheme();
     const [visible, setVisible] = useState(visibleProp ?? true);
     const slideAnim = React.useRef(new Animated.Value(-100)).current;
+    const shadows = createShadows(colors.foreground);
+
+    const handleDismiss = useCallback(() => {
+      Animated.timing(slideAnim, {
+        toValue: -100,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setVisible(false);
+        onDismiss?.();
+      });
+    }, [slideAnim, onDismiss]);
 
     useEffect(() => {
       setVisible(visibleProp ?? true);
@@ -62,31 +67,13 @@ const Toast = React.forwardRef<View, ToastProps>(
         useNativeDriver: true,
       }).start();
 
-      if (duration > 0) {
-        const timer = setTimeout(() => {
-          handleDismiss();
-        }, duration);
+      if (duration <= 0) return;
 
-        return () => clearTimeout(timer);
-      }
+      const timer = setTimeout(handleDismiss, duration);
+      return () => clearTimeout(timer);
+    }, [visible, duration, slideAnim, handleDismiss]);
 
-      return undefined;
-    }, [visible]);
-
-    const handleDismiss = () => {
-      Animated.timing(slideAnim, {
-        toValue: -100,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(() => {
-        setVisible(false);
-        onDismiss?.();
-      });
-    };
-
-    if (!visible) {
-      return null;
-    }
+    if (!visible) return null;
 
     const toastMessage = message || msg || "Message";
 
@@ -130,11 +117,7 @@ const Toast = React.forwardRef<View, ToastProps>(
         borderLeftColor: typeStyle.indicator,
         paddingHorizontal: 14,
         paddingVertical: 12,
-        shadowColor: typeStyle.indicator,
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
+        ...shadows.sm,
         zIndex: 999,
       },
       content: {
@@ -145,18 +128,18 @@ const Toast = React.forwardRef<View, ToastProps>(
       messageContainer: {
         flex: 1,
       },
-       message: {
-         ...typography.alert.message,
-         color: typeStyle.text,
-       },
-       closeButton: {
-         padding: 6,
-         marginLeft: 12,
-       },
-       closeIcon: {
-         ...typography.alert.close,
-         color: typeStyle.indicator,
-       },
+      message: {
+        ...typography.alert.message,
+        color: typeStyle.text,
+      },
+      closeButton: {
+        padding: 6,
+        marginLeft: 12,
+      },
+      closeIcon: {
+        ...typography.alert.close,
+        color: typeStyle.indicator,
+      },
     });
 
     return (
@@ -165,9 +148,7 @@ const Toast = React.forwardRef<View, ToastProps>(
         style={[
           styles.container,
           containerStyle,
-          {
-            transform: [{ translateY: slideAnim }],
-          },
+          { transform: [{ translateY: slideAnim }] },
         ]}
       >
         <View style={styles.content}>

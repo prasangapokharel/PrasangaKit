@@ -12,6 +12,8 @@ import {
 import Button from "./button";
 import { useTheme } from "../../lib/theme-context";
 import { typography } from "../../lib/typography";
+import { withOpacity } from "../../lib/utils";
+import { createShadows } from "../../lib/theme";
 
 interface DatePickerProps {
   /** Selected date */
@@ -53,6 +55,7 @@ const DatePicker = React.forwardRef<View, DatePickerProps>(
     ref
   ) => {
     const { colors } = useTheme();
+    const shadows = createShadows(colors.foreground);
     const [selectedDate, setSelectedDate] = useState(value);
     const [selectedHour, setSelectedHour] = useState(value.getHours());
     const [selectedMinute, setSelectedMinute] = useState(value.getMinutes());
@@ -121,7 +124,7 @@ const DatePicker = React.forwardRef<View, DatePickerProps>(
     const styles = StyleSheet.create({
       overlay: {
         flex: 1,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: withOpacity(colors.overlay, 0.5),
         justifyContent: "flex-end",
       },
       container: {
@@ -129,11 +132,7 @@ const DatePicker = React.forwardRef<View, DatePickerProps>(
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 24,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
-        elevation: 8,
+        ...shadows.lg,
       } as ViewStyle,
       header: {
         flexDirection: "row",
@@ -257,7 +256,21 @@ const DatePicker = React.forwardRef<View, DatePickerProps>(
             ref={ref}
           >
             <View style={styles.header}>
+              <TouchableOpacity
+                style={styles.navigationButton}
+                onPress={handlePreviousMonth}
+                accessibilityLabel="Previous month"
+              >
+                <Text style={styles.navigationText}>‹</Text>
+              </TouchableOpacity>
               <Text style={styles.title}>Select Date</Text>
+              <TouchableOpacity
+                style={styles.navigationButton}
+                onPress={handleNextMonth}
+                accessibilityLabel="Next month"
+              >
+                <Text style={styles.navigationText}>›</Text>
+              </TouchableOpacity>
             </View>
 
             <Text style={styles.monthYear}>

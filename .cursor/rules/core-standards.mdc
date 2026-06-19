@@ -1,0 +1,28 @@
+---
+description: Core standards for prasanga-ui — minimal code, security, no unsolicited docs
+alwaysApply: true
+---
+
+# Core Standards
+
+## Scope
+React Native mobile UI library (`prasanga-ui`). Every change must stay minimal, typed, and theme-aware.
+
+## Code
+- Smallest correct diff; no drive-by refactors.
+- Reuse existing abstractions (`typography`, `useTheme`, `cn`, constants).
+- No duplicate helpers — search before adding.
+- No comments that restate the code; JSDoc only for public/non-obvious APIs.
+
+## Files
+- Do **not** create or edit markdown (README, docs/*) unless the user asks.
+- Do **not** commit, push, or publish unless the user asks.
+- Public exports only through `src/index.ts`.
+
+## Security
+- No secrets in source; use `EXPO_PUBLIC_*` via `src/config/env.ts`.
+- No logging of tokens, passwords, or PII.
+- HTTP only through `src/services/api.ts`; sanitize/validate user input in hooks/utils.
+
+## Finish
+Run `npm run type-check` and `npm run lint` before marking work done.
