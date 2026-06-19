@@ -4,6 +4,8 @@ A professional React Native UI component library with **33+ fully-typed, theme-a
 
 ## 🎥 Demo & Guide
 
+https://www.npmjs.com/package/prasanga-init
+
 <div align="center">
   <video width="800" controls autoplay muted loop>
     <source src="docs/demo.mp4" type="video/mp4">
