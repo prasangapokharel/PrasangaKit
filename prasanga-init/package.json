@@ -1,0 +1,36 @@
+{
+  "name": "prasanga-init",
+  "version": "1.5.0",
+  "description": "Scaffold a new Expo app with prasanga-ui — 45+ shadcn-inspired React Native components",
+  "type": "module",
+  "bin": {
+    "prasanga-init": "cli.js"
+  },
+  "files": [
+    "cli.js",
+    "template"
+  ],
+  "keywords": [
+    "react-native",
+    "expo",
+    "prasanga-ui",
+    "starter",
+    "cli",
+    "typescript",
+    "shadcn"
+  ],
+  "author": "Prasanga Pokharel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasangapokharel/PrasangaKit.git",
+    "directory": "prasanga-init"
+  },
+  "homepage": "https://prasangakit.smmv.shop",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,19 +1,11 @@
 #!/usr/bin/env node
+// Dev wrapper — published CLI lives in prasanga-init/cli.js
+import { spawnSync } from "child_process";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
-import { execSync } from "child_process";
-
-const appName = process.argv[2] || "MyPrasangaApp";
-
-console.log(`\n🚀 Creating new Prasanga Expo App: ${appName}...\n`);
-
-try {
-  execSync(`npx degit prasangapokharel/prasanga-init ${appName}`, { stdio: "inherit" });
-  console.log(`\n✅ All done! Your Prasanga app is ready.\n`);
-  console.log(`📍 Navigate to your app:`);
-  console.log(`   cd ${appName}`);
-  console.log(`   npm install`);
-  console.log(`   npx expo start\n`);
-} catch (error) {
-  console.error(`\n❌ Error creating app:`, error.message);
-  process.exit(1);
-}
+const cli = join(dirname(fileURLToPath(import.meta.url)), "prasanga-init", "cli.js");
+const result = spawnSync(process.execPath, [cli, ...process.argv.slice(2)], {
+  stdio: "inherit",
+});
+process.exit(result.status ?? 1);

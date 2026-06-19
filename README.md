@@ -36,13 +36,14 @@ https://www.npmjs.com/package/prasanga-init
 ```bash
 npx prasanga-init MyNewApp
 cd MyNewApp
-npm install
 npx expo start
 ```
 
-That's it! Your new Expo app with all 33+ components is ready to build. 
+Dependencies install automatically. The starter includes a full **prasanga-ui v1.5** component showcase — scan the QR code with Expo Go.
 
-Scan the QR code with Expo Go app to see it running on your phone!
+**Packages:**
+- Starter CLI: https://www.npmjs.com/package/prasanga-init
+- UI library: https://www.npmjs.com/package/prasanga-ui
 
 **Website**: https://prasangakit.smmv.shop
 
